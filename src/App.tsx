@@ -1,8 +1,4 @@
-declare module '@vkruglikov/react-telegram-web-app' {
-  export function useHapticFeedback(): [(style: 'impact' | 'notification' | 'selection') => void];
-}
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { useHapticFeedback } from '@vkruglikov/react-telegram-web-app';
 
 type EmojiType = {
   id: number;
@@ -21,6 +17,8 @@ type ClickType = {
 };
 
 function App() {
+  const tg = window.Telegram?.WebApp;
+
   const [isPressed, setIsPressed] = useState(false);
   const [points, setPoints] = useState(42858169);
   const [energy, setEnergy] = useState(2341);
@@ -32,7 +30,9 @@ function App() {
   const animationSpeedRef = useRef(1);
   const coinRef = useRef<HTMLDivElement>(null);
 
-  const [impactOccurred] = useHapticFeedback();
+  useEffect(() => {
+    tg?.expand();
+  }, []);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     setIsPressed(true);
@@ -121,7 +121,7 @@ function App() {
       setClicks(prev => [...prev, { id: Date.now(), x, y }]);
       
       // Haptic feedback
-      impactOccurred('heavy');
+      tg?.HapticFeedback.impactOccurred('light');
     }
   };
 
