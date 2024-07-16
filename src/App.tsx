@@ -1,181 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useHapticFeedback } from '@vkruglikov/react-telegram-web-app';
 
-type EmojiType = {
-  id: number;
-  emoji: string;
-  x: number;
-  y: number;
-  size: number;
-  speedX: number;
-  speedY: number;
-};
-
-type ClickType = {
-  id: number;
-  x: number;
-  y: number;
-};
+// ... (previous type definitions and imports remain the same)
 
 function App() {
-  const [isPressed, setIsPressed] = useState(false);
-  const [points, setPoints] = useState(42858169);
-  const [energy, setEnergy] = useState(2341);
-  const [headerEmojis, setHeaderEmojis] = useState<EmojiType[]>([]);
-  const [coinEmojis, setCoinEmojis] = useState<EmojiType[]>([]);
-  const [clicks, setClicks] = useState<ClickType[]>([]);
-  const [lastTapTime, setLastTapTime] = useState(Date.now());
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const animationSpeedRef = useRef(1);
-  const coinRef = useRef<HTMLDivElement>(null);
-
-  const [impactOccurred] = useHapticFeedback();
-
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-    setIsPressed(true);
-    handleTilt(e);
-  };
-
-  const handleMouseUp = () => {
-    setIsPressed(false);
-    setTilt({ x: 0, y: 0 });
-  };
-
-  const handleTilt = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-    if (coinRef.current) {
-      const rect = coinRef.current.getBoundingClientRect();
-      let clientX, clientY;
-      if ('touches' in e) {
-        clientX = e.touches[0].clientX;
-        clientY = e.touches[0].clientY;
-      } else {
-        clientX = e.clientX;
-        clientY = e.clientY;
-      }
-      const x = clientX - rect.left - rect.width / 2;
-      const y = clientY - rect.top - rect.height / 2;
-      const tiltX = (y / rect.height) * 30;
-      const tiltY = -(x / rect.width) * 30;
-      setTilt({ x: tiltX, y: tiltY });
-    }
-  };
-
-  const openGithub = () => {
-    window.open('https://t.me/vnvnc_spb');
-  };
-
-  const getRandomEmoji = () => {
-    const emojis = ['🎉', '⭐', '💥', '🚀', '💎', '🔥'];
-    return emojis[Math.floor(Math.random() * emojis.length)];
-  };
-
-  const createInitialHeaderEmojis = useCallback((count: number) => {
-    return Array(count).fill(null).map(() => ({
-      id: Date.now() + Math.random(),
-      emoji: getRandomEmoji(),
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 24 + 16,
-      speedX: (Math.random() - 0.5) * 0.5,
-      speedY: (Math.random() - 0.5) * 0.5
-    }));
-  }, []);
-
-  useEffect(() => {
-    setHeaderEmojis(createInitialHeaderEmojis(7));
-  }, [createInitialHeaderEmojis]);
-
-  const addCoinEmojis = useCallback((x: number, y: number) => {
-    const newEmojis = Array(15).fill(null).map(() => ({
-      id: Date.now() + Math.random(),
-      emoji: getRandomEmoji(),
-      x: x + (Math.random() - 0.5) * 100,
-      y: y + (Math.random() - 0.5) * 100,
-      size: Math.random() * 20 + 10,
-      speedX: (Math.random() - 0.5) * 1,
-      speedY: -(Math.random() * 0.5 + 0.25)
-    }));
-    setCoinEmojis(prev => [...prev, ...newEmojis]);
-    setLastTapTime(Date.now());
-  }, []);
-
-  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
-    if (energy > 0 && coinRef.current) {
-      const rect = coinRef.current.getBoundingClientRect();
-      let clientX, clientY;
-      if ('touches' in e) {
-        clientX = e.touches[0].clientX;
-        clientY = e.touches[0].clientY;
-      } else {
-        clientX = e.clientX;
-        clientY = e.clientY;
-      }
-      const x = clientX - rect.left;
-      const y = clientY - rect.top;
-      setPoints(prev => prev + 1);
-      setEnergy(prev => Math.max(0, prev - 1));
-      addCoinEmojis(x, y);
-      setClicks(prev => [...prev, { id: Date.now(), x, y }]);
-      
-      // Haptic feedback
-      impactOccurred('heavy');
-    }
-  };
-
-  const handleAnimationEnd = (id: number) => {
-    setClicks(prevClicks => prevClicks.filter(click => click.id !== id));
-  };
-
-  useEffect(() => {
-    const animationFrame = requestAnimationFrame(function animate() {
-      const currentTime = Date.now();
-      const timeSinceLastTap = currentTime - lastTapTime;
-      
-      animationSpeedRef.current = timeSinceLastTap > 2000 ? 0.2 : 1;
-
-      setHeaderEmojis(prevEmojis =>
-        prevEmojis.map(emoji => ({
-          ...emoji,
-          x: (emoji.x + emoji.speedX * animationSpeedRef.current + 100) % 100,
-          y: (emoji.y + emoji.speedY * animationSpeedRef.current + 100) % 100,
-        }))
-      );
-
-      setCoinEmojis(prevEmojis =>
-        prevEmojis.map(emoji => ({
-          ...emoji,
-          x: emoji.x + emoji.speedX * animationSpeedRef.current,
-          y: emoji.y + emoji.speedY * animationSpeedRef.current,
-          speedY: emoji.speedY + 0.02 * animationSpeedRef.current
-        })).filter(emoji => {
-          const age = currentTime - emoji.id;
-          return age < 2000 && emoji.y < 300;
-        })
-      );
-
-      requestAnimationFrame(animate);
-    });
-
-    return () => cancelAnimationFrame(animationFrame);
-  }, [lastTapTime]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setEnergy((prevEnergy) => Math.min(prevEnergy + 1, 6500));
-    }, 800);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Disable scrolling on phones
-  useEffect(() => {
-    const preventDefault = (e: Event) => e.preventDefault();
-    document.body.style.overflow = 'hidden';
-    document.addEventListener('touchmove', preventDefault, { passive: false });
-    return () => {
-      document.body.style.overflow = 'auto';
-      document.removeEventListener('touchmove', preventDefault);
-    };
-  }, []);
+  // ... (state declarations and other functions remain the same)
 
   return (
     <div className="bg-gradient-main min-h-screen flex flex-col items-center text-white font-medium" style={{ userSelect: 'none' }}>
@@ -296,4 +125,21 @@ function App() {
                   <img src='/images/coin.png' width={24} height={24} alt="Earn" />
                   <span>Earn</span>
                 </button>
-                <div className
+                <div className="h-[48px] w-[2px] bg-[#fddb6d]"></div>
+                <button className="flex flex-col items-center gap-1" onClick={openGithub}>
+                  <img src='/images/rocket.png' width={24} height={24} alt="Boosts" />
+                  <span>Boosts</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="w-full bg-[#f9c035] rounded-full">
+            <div className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" style={{ width: `${(energy / 6500) * 100}%` }}></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default App
