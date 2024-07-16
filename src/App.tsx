@@ -25,8 +25,7 @@ function App() {
   const [coinEmojis, setCoinEmojis] = useState<EmojiType[]>([]);
   const [clicks, setClicks] = useState<ClickType[]>([]);
   const [lastTapTime, setLastTapTime] = useState(Date.now());
-  const headerSpeedRef = useRef(0.3); // Reduced max speed by 70%
-  const coinSpeedRef = useRef(0.7); // Slowed down by 30%
+  const animationSpeedRef = useRef(1);
 
   const handleMouseDown = () => setIsPressed(true);
   const handleMouseUp = () => setIsPressed(false);
@@ -46,14 +45,14 @@ function App() {
       emoji: getRandomEmoji(),
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 24 + 16, // Slightly bigger emojis
-      speedX: (Math.random() - 0.5) * 2,
-      speedY: (Math.random() - 0.5) * 2
+      size: Math.random() * 24 + 16,
+      speedX: (Math.random() - 0.5) * 0.5,
+      speedY: (Math.random() - 0.5) * 0.5
     }));
   }, []);
 
   useEffect(() => {
-    setHeaderEmojis(createInitialHeaderEmojis(7)); // 30% less emojis
+    setHeaderEmojis(createInitialHeaderEmojis(7));
   }, [createInitialHeaderEmojis]);
 
   const addCoinEmojis = useCallback((x: number, y: number) => {
@@ -63,12 +62,11 @@ function App() {
       x: x + (Math.random() - 0.5) * 100,
       y: y + (Math.random() - 0.5) * 100,
       size: Math.random() * 20 + 10,
-      speedX: (Math.random() - 0.5) * 2 * coinSpeedRef.current,
-      speedY: -(Math.random() * 1 + 0.5) * coinSpeedRef.current
+      speedX: (Math.random() - 0.5) * 1,
+      speedY: -(Math.random() * 0.5 + 0.25)
     }));
     setCoinEmojis(prev => [...prev, ...newEmojis]);
-    coinSpeedRef.current = Math.min(coinSpeedRef.current + 0.07, 1.05); // Adjusted for slower effect
-    headerSpeedRef.current = Math.min(headerSpeedRef.current + 0.06, 0.6); // Adjusted for 70% reduction
+    setLastTapTime(Date.now());
   }, []);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -80,7 +78,6 @@ function App() {
       setEnergy(prev => Math.max(0, prev - 1));
       addCoinEmojis(x, y);
       setClicks(prev => [...prev, { id: Date.now(), x, y }]);
-      setLastTapTime(Date.now());
     }
   };
 
@@ -93,25 +90,22 @@ function App() {
       const currentTime = Date.now();
       const timeSinceLastTap = currentTime - lastTapTime;
       
-      if (timeSinceLastTap > 5000) {
-        headerSpeedRef.current = Math.max(headerSpeedRef.current - 0.01, 0);
-        coinSpeedRef.current = Math.max(coinSpeedRef.current - 0.01, 0.7);
-      }
+      animationSpeedRef.current = timeSinceLastTap > 2000 ? 0.2 : 1;
 
       setHeaderEmojis(prevEmojis =>
         prevEmojis.map(emoji => ({
           ...emoji,
-          x: (emoji.x + emoji.speedX * headerSpeedRef.current + 100) % 100,
-          y: (emoji.y + emoji.speedY * headerSpeedRef.current + 100) % 100,
+          x: (emoji.x + emoji.speedX * animationSpeedRef.current + 100) % 100,
+          y: (emoji.y + emoji.speedY * animationSpeedRef.current + 100) % 100,
         }))
       );
 
       setCoinEmojis(prevEmojis =>
         prevEmojis.map(emoji => ({
           ...emoji,
-          x: emoji.x + emoji.speedX,
-          y: emoji.y + emoji.speedY,
-          speedY: emoji.speedY + 0.05
+          x: emoji.x + emoji.speedX * animationSpeedRef.current,
+          y: emoji.y + emoji.speedY * animationSpeedRef.current,
+          speedY: emoji.speedY + 0.02 * animationSpeedRef.current
         })).filter(emoji => {
           const age = currentTime - emoji.id;
           return age < 2000 && emoji.y < 300;
@@ -141,9 +135,9 @@ function App() {
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
         <div className="fixed top-0 left-0 w-full px-6 pt-8 z-10 flex flex-col items-center text-white">
           <div className="w-full cursor-pointer">
-            <div className="bg-[#1f1f1f] text-center py-2 rounded-xl backdrop-blur-md relative overflow-hidden">
+            <div className="bg-[#1f1f1f] text-center py-4 rounded-xl backdrop-blur-md relative overflow-hidden">
               <a href="https://t.me/vnvnc_spb">
-                <p className="text-lg relative z-10">VNVNC COIN MANIA <ChevronRight size={18} className="ml-0 mb-1 inline-block" /></p>
+                <p className="text-2xl relative z-10">VNVNC COIN MANIA <ChevronRight size={24} className="ml-0 mb-1 inline-block" /></p>
               </a>
               {headerEmojis.map(emoji => (
                 <div
