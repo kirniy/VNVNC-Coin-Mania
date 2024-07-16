@@ -1,16 +1,20 @@
-// © 2024 Malith Rukshan - https://github.com/Malith-Rukshan
+// First, install Lucide React by running this command in your project directory:
+// npm install lucide-react
+// or if you're using yarn:
+// yarn add lucide-react
 
 import { useState, useEffect } from 'react'
 import Arrow from './assets/Arrow'
+import { Star } from 'lucide-react' // Import the Star icon from Lucide React
 
 function App() {
   const [isPressed, setIsPressed] = useState(false);
   const [points, setPoints] = useState(42857775);
   const [energy, setEnergy] = useState(2532);
   const [clicks, setClicks] = useState<{ id: number, x: number, y: number }[]>([]);
+  const [floatingEmojis, setFloatingEmojis] = useState<{ id: number, emoji: string, x: number, y: number, size: number, speedX: number, speedY: number }[]>([]);
   const pointsToAdd = 1;
   const energyToReduce = 1;
-
 
   const handleMouseDown = () => setIsPressed(true);
   const handleMouseUp = () => setIsPressed(false);
@@ -30,19 +34,48 @@ function App() {
     setPoints(points + pointsToAdd);
     setEnergy(energy - energyToReduce < 0 ? 0 : energy - energyToReduce);
     setClicks([...clicks, { id: Date.now(), x, y }]);
+    addFloatingEmoji();
   };
 
   const handleAnimationEnd = (id: number) => {
     setClicks((prevClicks) => prevClicks.filter(click => click.id !== id));
   };
 
-  // useEffect hook to restore energy over time
+  const addFloatingEmoji = () => {
+    const emojis = ['⭐️', '⚡️', '🍹', '🎤', '🎉', '🪩'];
+    const newEmoji = {
+      id: Date.now(),
+      emoji: emojis[Math.floor(Math.random() * emojis.length)],
+      x: Math.random() * 100,
+      y: 80, // Start from the bottom of the header
+      size: Math.random() * 20 + 10,
+      speedX: (Math.random() - 0.5) * 2,
+      speedY: -(Math.random() * 2 + 1) // Negative speed to move upwards
+    };
+    setFloatingEmojis(prevEmojis => [...prevEmojis, newEmoji]);
+  };
+
+  useEffect(() => {
+    const animationFrame = requestAnimationFrame(function animate() {
+      setFloatingEmojis(prevEmojis =>
+        prevEmojis.map(emoji => ({
+          ...emoji,
+          x: emoji.x + emoji.speedX,
+          y: emoji.y + emoji.speedY
+        })).filter(emoji => emoji.y > -10) // Remove emojis that have floated off the top
+      );
+      requestAnimationFrame(animate);
+    });
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setEnergy((prevEnergy) => Math.min(prevEnergy + 1, 6500));
-    }, 800); // Resporce energy every 200ms
+    }, 800);
 
-    return () => clearInterval(interval); // Clear interval on component unmount
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -56,19 +89,33 @@ function App() {
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
 
         <div className="fixed top-0 left-0 w-full px-6 pt-8 z-10 flex flex-col items-center text-white">
-          <div className="w-full cursor-pointer">
+          <div className="w-full cursor-pointer relative overflow-hidden" style={{ height: '60px' }}>
             <div className="bg-[#1f1f1f] text-center py-2 rounded-xl backdrop-blur-md">
               <a href="https://t.me/vnvnc_spb">
                 <p className="text-lg">VNVNC COIN MANIA <Arrow size={18} className="ml-0 mb-1 inline-block" /></p>
               </a>
             </div>
+            {floatingEmojis.map(emoji => (
+              <div
+                key={emoji.id}
+                className="absolute text-2xl pointer-events-none"
+                style={{
+                  left: `${emoji.x}%`,
+                  top: `${emoji.y}%`,
+                  fontSize: `${emoji.size}px`,
+                  transition: 'all 0.1s linear'
+                }}
+              >
+                {emoji.emoji}
+              </div>
+            ))}
           </div>
           <div className="mt-12 text-5xl font-bold flex items-center">
             <img src='./images/coin.png' width={44} height={44} />
             <span className="ml-2">{points.toLocaleString()}</span>
           </div>
           <div className="text-base mt-2 flex items-center">
-            <img src='./images/trophy.png' width={24} height={24} />
+            <Star size={24} /> {/* Using Lucide React Star icon */}
             <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer">
               <span className="ml-1">Gold <Arrow size={18} className="ml-0 mb-1 inline-block" /></span>
             </a>
@@ -155,3 +202,4 @@ function App() {
 }
 
 export default App
+
