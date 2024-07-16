@@ -1,4 +1,17 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
+
+// Add type declaration for Telegram Web App API
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp?: {
+        HapticFeedback?: {
+          impactOccurred: (style: string) => void;
+        };
+      };
+    };
+  }
+}
 
 type EmojiType = {
   id: number;
@@ -98,8 +111,8 @@ function App() {
   }, []);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
-    if (energy > 0) {
-      const rect = coinRef.current!.getBoundingClientRect();
+    if (energy > 0 && coinRef.current) {
+      const rect = coinRef.current.getBoundingClientRect();
       let clientX, clientY;
       if ('touches' in e) {
         clientX = e.touches[0].clientX;
