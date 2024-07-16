@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { ChevronRight, Star } from 'lucide-react'
 
 function App() {
@@ -83,7 +83,7 @@ function App() {
 
       <div className="text-center mb-8">
         <div className="flex justify-center items-center">
-          <img src="/coin.png" alt="Coin" className="w-12 h-12 mr-2" />
+          <img src="/images/coin.png" alt="Coin" className="w-12 h-12 mr-2" />
           <span className="text-6xl font-bold">{points.toLocaleString()}</span>
         </div>
         <div className="mt-2 flex justify-center items-center">
@@ -94,7 +94,7 @@ function App() {
 
       <div className="relative" style={{ width: '256px', height: '256px' }}>
         <img
-          src="/notcoin.png"
+          src="/images/notcoin.png"
           alt="VNVNC"
           className="w-full h-full"
           style={{
@@ -134,17 +134,17 @@ function App() {
           </div>
           <div className="bg-[#fad258] rounded-full py-2 px-6 flex justify-around items-center">
             <button className="flex flex-col items-center mx-4">
-              <img src="/bear.png" alt="Frens" className="w-8 h-8 mb-1" />
+              <img src="/images/bear.png" alt="Frens" className="w-8 h-8 mb-1" />
               <span className="text-xs">Frens</span>
             </button>
             <div className="w-px h-8 bg-[#fddb6d]"></div>
             <button className="flex flex-col items-center mx-4">
-              <img src="/coin.png" alt="Earn" className="w-8 h-8 mb-1" />
+              <img src="/images/coin.png" alt="Earn" className="w-8 h-8 mb-1" />
               <span className="text-xs">Earn</span>
             </button>
             <div className="w-px h-8 bg-[#fddb6d]"></div>
             <button className="flex flex-col items-center mx-4">
-              <img src="/rocket.png" alt="Boosts" className="w-8 h-8 mb-1" />
+              <img src="/images/rocket.png" alt="Boosts" className="w-8 h-8 mb-1" />
               <span className="text-xs">Boosts</span>
             </button>
           </div>
