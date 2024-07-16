@@ -38,7 +38,7 @@ function App() {
   const [clicks, setClicks] = useState<ClickType[]>([]);
   const [lastTapTime, setLastTapTime] = useState(Date.now());
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const animationSpeedRef = useRef(1);
+  const animationSpeedRef = useRef(0.4);
   const coinRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
