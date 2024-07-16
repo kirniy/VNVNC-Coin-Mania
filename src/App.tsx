@@ -169,6 +169,17 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  // Disable scrolling on phones
+  useEffect(() => {
+    const preventDefault = (e: Event) => e.preventDefault();
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('touchmove', preventDefault, { passive: false });
+    return () => {
+      document.body.style.overflow = 'auto';
+      document.removeEventListener('touchmove', preventDefault);
+    };
+  }, []);
+
   return (
     <div className="bg-gradient-main h-screen px-4 flex flex-col items-center text-white font-medium overflow-hidden" style={{ userSelect: 'none' }}>
       <div className="absolute inset-0 h-1/2 bg-gradient-overlay z-0"></div>
