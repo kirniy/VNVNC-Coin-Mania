@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
+import { ChevronRight } from 'lucide-react'
 
 // Add type declaration for Telegram Web App API
 declare global {
@@ -38,8 +39,7 @@ function App() {
   const [clicks, setClicks] = useState<ClickType[]>([]);
   const [lastTapTime, setLastTapTime] = useState(Date.now());
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const headerSpeedRef = useRef(1);
-  const coinSpeedRef = useRef(0.5);
+  const animationSpeedRef = useRef(1);
   const coinRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
@@ -87,8 +87,8 @@ function App() {
       x: Math.random() * 100,
       y: Math.random() * 100,
       size: Math.random() * 24 + 16,
-      speedX: (Math.random() - 0.5) * 2,
-      speedY: (Math.random() - 0.5) * 2
+      speedX: (Math.random() - 0.5) * 0.5,
+      speedY: (Math.random() - 0.5) * 0.5
     }));
   }, []);
 
@@ -144,25 +144,22 @@ function App() {
       const currentTime = Date.now();
       const timeSinceLastTap = currentTime - lastTapTime;
       
-      if (timeSinceLastTap > 5000) {
-        headerSpeedRef.current = Math.max(headerSpeedRef.current - 0.01, 0);
-        coinSpeedRef.current = Math.max(coinSpeedRef.current - 0.01, 0);
-      }
+      animationSpeedRef.current = timeSinceLastTap > 2000 ? 0.2 : 1;
 
       setHeaderEmojis(prevEmojis =>
         prevEmojis.map(emoji => ({
           ...emoji,
-          x: (emoji.x + emoji.speedX * headerSpeedRef.current + 100) % 100,
-          y: (emoji.y + emoji.speedY * headerSpeedRef.current + 100) % 100,
+          x: (emoji.x + emoji.speedX * animationSpeedRef.current + 100) % 100,
+          y: (emoji.y + emoji.speedY * animationSpeedRef.current + 100) % 100,
         }))
       );
 
       setCoinEmojis(prevEmojis =>
         prevEmojis.map(emoji => ({
           ...emoji,
-          x: emoji.x + emoji.speedX * coinSpeedRef.current,
-          y: emoji.y + emoji.speedY * coinSpeedRef.current,
-          speedY: emoji.speedY + 0.02 * coinSpeedRef.current
+          x: emoji.x + emoji.speedX * animationSpeedRef.current,
+          y: emoji.y + emoji.speedY * animationSpeedRef.current,
+          speedY: emoji.speedY + 0.02 * animationSpeedRef.current
         })).filter(emoji => {
           const age = currentTime - emoji.id;
           return age < 2000 && emoji.y < 300;
@@ -194,43 +191,42 @@ function App() {
   }, []);
 
   return (
-    <div className="bg-gradient-main h-screen px-4 flex flex-col items-center text-white font-medium overflow-hidden" style={{ userSelect: 'none' }}>
+    <div className="bg-gradient-main min-h-screen px-4 flex flex-col items-center text-white font-medium" style={{ userSelect: 'none' }}>
       <div className="absolute inset-0 h-1/2 bg-gradient-overlay z-0"></div>
       <div className="absolute inset-0 flex items-center justify-center z-0">
         <div className="radial-gradient-overlay"></div>
       </div>
 
-      <div className="w-full z-10 h-full flex flex-col items-center text-white">
-        <div className="fixed top-0 left-0 w-full z-10">
-          <div className="w-full bg-[#1f1f1f] py-6 relative overflow-hidden">
-            <div className="text-3xl font-extrabold text-center relative z-10 header-text">
-              🎊 VNVNC COIN MANIA
+      <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
+        <div className="fixed top-0 left-0 w-full px-6 pt-8 z-10 flex flex-col items-center text-white">
+          <div className="w-full cursor-pointer">
+            <div className="bg-[#1f1f1f] text-center py-4 rounded-xl backdrop-blur-md relative overflow-hidden">
+              <a href="https://t.me/vnvnc_spb">
+                <p className="text-2xl relative z-10">VNVNC COIN MANIA <ChevronRight size={24} className="ml-0 mb-1 inline-block" /></p>
+              </a>
+              {headerEmojis.map(emoji => (
+                <div
+                  key={emoji.id}
+                  className="absolute text-2xl pointer-events-none"
+                  style={{
+                    left: `${emoji.x}%`,
+                    top: `${emoji.y}%`,
+                    fontSize: `${emoji.size}px`,
+                  }}
+                >
+                  {emoji.emoji}
+                </div>
+              ))}
             </div>
-            {headerEmojis.map(emoji => (
-              <div
-                key={emoji.id}
-                className="absolute text-2xl pointer-events-none"
-                style={{
-                  left: `${emoji.x}%`,
-                  top: `${emoji.y}%`,
-                  fontSize: `${emoji.size}px`,
-                }}
-              >
-                {emoji.emoji}
-              </div>
-            ))}
           </div>
-        </div>
-
-        <div className="mt-24 text-center">
-          <div className="flex justify-center items-center">
-            <img src='/images/coin.png' width={60} height={60} alt="Coin" className="mr-4" />
-            <span className="text-6xl font-bold">{points.toLocaleString()}</span>
+          <div className="mt-12 text-5xl font-bold flex items-center">
+            <img src='/images/coin.png' width={44} height={44} alt="Coin" />
+            <span className="ml-2">{points.toLocaleString()}</span>
           </div>
-          <div className="mt-2 flex justify-center items-center">
-            <img src='/images/trophy.png' width={24} height={24} alt="Trophy" className="mr-2" />
-            <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer" className="text-xl">
-              Gold
+          <div className="text-base mt-2 flex items-center">
+            <img src='/images/trophy.png' width={24} height={24} alt="Trophy" />
+            <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer">
+              <span className="ml-1">Gold <ChevronRight size={18} className="ml-0 mb-1 inline-block" /></span>
             </a>
           </div>
         </div>
@@ -238,7 +234,7 @@ function App() {
         <div className="flex-grow flex items-center justify-center select-none">
           <div 
             ref={coinRef}
-            className="relative mt-4"
+            className="relative"
             onClick={handleClick}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
@@ -256,8 +252,8 @@ function App() {
               style={{
                 pointerEvents: 'none',
                 userSelect: 'none',
-                transform: `${isPressed ? 'translateY(4px)' : 'translateY(0px)'} rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-                transition: 'transform 200ms ease',
+                transform: `perspective(1000px) ${isPressed ? 'translateY(4px)' : 'translateY(0px)'} rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+                transition: 'transform 0.1s ease',
               }}
               className='select-none'
             />
@@ -293,13 +289,13 @@ function App() {
         </div>
 
         <div className="fixed bottom-0 left-0 w-full px-6 pb-8 z-10">
-          <div className="w-full flex justify-between gap-2 mb-4">
+          <div className="w-full flex justify-between gap-2">
             <div className="w-1/3 flex items-center justify-start max-w-32">
               <div className="flex items-center justify-center">
                 <img src='/images/high-voltage.png' width={44} height={44} alt="High Voltage" />
                 <div className="ml-2 text-left">
                   <span className="text-white text-2xl font-bold block">{energy}</span>
-                  <span className="text-white text-sm opacity-75">/ 6500</span>
+                  <span className="text-white text-large opacity-75">/ 6500</span>
                 </div>
               </div>
             </div>
@@ -322,7 +318,7 @@ function App() {
               </div>
             </div>
           </div>
-          <div className="w-full bg-[#f9c035] rounded-full">
+          <div className="w-full bg-[#f9c035] rounded-full mt-4">
             <div className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" style={{ width: `${(energy / 6500) * 100}%` }}></div>
           </div>
         </div>
