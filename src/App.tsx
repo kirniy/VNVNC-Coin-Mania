@@ -8,8 +8,8 @@ function App() {
   const [points, setPoints] = useState(42857775);
   const [energy, setEnergy] = useState(2532);
   const [clicks, setClicks] = useState<{ id: number, x: number, y: number }[]>([]);
-  const pointsToAdd = 12;
-  const energyToReduce = 12;
+  const pointsToAdd = 1;
+  const energyToReduce = 1;
 
 
   const handleMouseDown = () => setIsPressed(true);
