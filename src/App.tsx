@@ -1,15 +1,25 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { ChevronRight } from 'lucide-react'
 
+type EmojiType = {
+  id: number;
+  emoji: string;
+  x: number;
+  y: number;
+  size: number;
+  speedX: number;
+  speedY: number;
+};
+
 function App() {
   const [isPressed, setIsPressed] = useState(false);
-  const [points, setPoints] = useState(42858161);
-  const [energy, setEnergy] = useState(2338);
-  const [floatingEmojis, setFloatingEmojis] = useState<{ id: number, emoji: string, x: number, y: number, size: number, speedX: number, speedY: number }[]>([]);
-  const [headerEmojis, setHeaderEmojis] = useState<{ id: number, emoji: string, x: number, y: number, size: number, speedX: number, speedY: number }[]>([]);
+  const [points, setPoints] = useState(42858169);
+  const [energy, setEnergy] = useState(2341);
+  const [headerEmojis, setHeaderEmojis] = useState<EmojiType[]>([]);
+  const [coinEmojis, setCoinEmojis] = useState<EmojiType[]>([]);
   const [lastTapTime, setLastTapTime] = useState(Date.now());
-  const [tapCount, setTapCount] = useState(0);
-  const animationSpeedRef = useRef(0);
+  const headerSpeedRef = useRef(1);
+  const coinSpeedRef = useRef(1);
 
   const handleMouseDown = () => setIsPressed(true);
   const handleMouseUp = () => setIsPressed(false);
@@ -18,40 +28,48 @@ function App() {
     window.open('https://t.me/vnvnc_spb');
   };
 
-  const addFloatingEmojis = useCallback(() => {
+  const getRandomEmoji = () => {
     const emojis = ['🎉', '⭐', '💥', '🚀', '💎', '🔥'];
-    const newEmojis = Array(10).fill(null).map(() => ({
+    return emojis[Math.floor(Math.random() * emojis.length)];
+  };
+
+  const createInitialHeaderEmojis = useCallback((count: number) => {
+    return Array(count).fill(null).map(() => ({
       id: Date.now() + Math.random(),
-      emoji: emojis[Math.floor(Math.random() * emojis.length)],
-      x: Math.random() * 200 - 50,
-      y: Math.random() * 200 - 50,
-      size: Math.random() * 20 + 10,
-      speedX: (Math.random() - 0.5) * 2,
-      speedY: -(Math.random() * 1 + 0.5) * (1 + tapCount * 0.05)
-    }));
-    setFloatingEmojis(prev => [...prev, ...newEmojis]);
-    
-    const newHeaderEmojis = Array(5).fill(null).map(() => ({
-      id: Date.now() + Math.random(),
-      emoji: emojis[Math.floor(Math.random() * emojis.length)],
+      emoji: getRandomEmoji(),
       x: Math.random() * 100,
       y: Math.random() * 100,
       size: Math.random() * 20 + 10,
       speedX: (Math.random() - 0.5) * 2,
       speedY: (Math.random() - 0.5) * 2
     }));
-    setHeaderEmojis(prev => [...prev, ...newHeaderEmojis]);
+  }, []);
 
-    setLastTapTime(Date.now());
-    setTapCount(prev => prev + 1);
-    animationSpeedRef.current = Math.min(animationSpeedRef.current + 0.2, 2);
-  }, [tapCount]);
+  useEffect(() => {
+    setHeaderEmojis(createInitialHeaderEmojis(10));
+  }, [createInitialHeaderEmojis]);
+
+  const addCoinEmojis = useCallback(() => {
+    const newEmojis = Array(5).fill(null).map(() => ({
+      id: Date.now() + Math.random(),
+      emoji: getRandomEmoji(),
+      x: Math.random() * 200 - 50,
+      y: Math.random() * 200 - 50,
+      size: Math.random() * 20 + 10,
+      speedX: (Math.random() - 0.5) * 1,
+      speedY: -(Math.random() * 0.5 + 0.25)
+    }));
+    setCoinEmojis(prev => [...prev, ...newEmojis]);
+    coinSpeedRef.current = Math.min(coinSpeedRef.current + 0.1, 1.5);
+    headerSpeedRef.current = Math.min(headerSpeedRef.current + 0.2, 2);
+  }, []);
 
   const handleClick = () => {
     if (energy > 0) {
       setPoints(prev => prev + 1);
       setEnergy(prev => Math.max(0, prev - 1));
-      addFloatingEmojis();
+      addCoinEmojis();
+      setLastTapTime(Date.now());
     }
   };
 
@@ -61,32 +79,29 @@ function App() {
       const timeSinceLastTap = currentTime - lastTapTime;
       
       if (timeSinceLastTap > 5000) {
-        animationSpeedRef.current = Math.max(animationSpeedRef.current - 0.01, 0);
+        headerSpeedRef.current = Math.max(headerSpeedRef.current - 0.01, 1);
+        coinSpeedRef.current = Math.max(coinSpeedRef.current - 0.01, 1);
       }
-
-      setFloatingEmojis(prevEmojis =>
-        prevEmojis.map(emoji => ({
-          ...emoji,
-          x: emoji.x + emoji.speedX * animationSpeedRef.current,
-          y: emoji.y + emoji.speedY * animationSpeedRef.current,
-          speedY: emoji.speedY + 0.02 * animationSpeedRef.current
-        })).filter(emoji => {
-          const age = currentTime - emoji.id;
-          return age < 5000;
-        })
-      );
 
       setHeaderEmojis(prevEmojis =>
         prevEmojis.map(emoji => ({
           ...emoji,
-          x: (emoji.x + emoji.speedX * animationSpeedRef.current + 100) % 100,
-          y: (emoji.y + emoji.speedY * animationSpeedRef.current + 100) % 100,
+          x: (emoji.x + emoji.speedX * headerSpeedRef.current + 100) % 100,
+          y: (emoji.y + emoji.speedY * headerSpeedRef.current + 100) % 100,
         }))
       );
 
-      if (timeSinceLastTap > 5000) {
-        setTapCount(0);
-      }
+      setCoinEmojis(prevEmojis =>
+        prevEmojis.map(emoji => ({
+          ...emoji,
+          x: emoji.x + emoji.speedX * coinSpeedRef.current,
+          y: emoji.y + emoji.speedY * coinSpeedRef.current,
+          speedY: emoji.speedY + 0.01 * coinSpeedRef.current
+        })).filter(emoji => {
+          const age = currentTime - emoji.id;
+          return age < 2000 && emoji.y < 300;
+        })
+      );
 
       requestAnimationFrame(animate);
     });
@@ -162,7 +177,7 @@ function App() {
               }}
               className='select-none'
             />
-            {floatingEmojis.map(emoji => (
+            {coinEmojis.map(emoji => (
               <div
                 key={emoji.id}
                 className="absolute text-2xl pointer-events-none"
