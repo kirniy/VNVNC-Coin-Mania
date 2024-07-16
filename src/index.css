@@ -5,6 +5,7 @@
 body {
   font-family: sans-serif;
   background-color: #000000;
+  overflow: hidden;
 }
 
 @keyframes float {
@@ -32,3 +33,7 @@ body {
   height: 100%;
   background: radial-gradient(circle, rgba(255, 165, 0, 0.3) 0%, rgba(255, 165, 0, 0) 60%);
 }
+
+.header-text {
+  font-weight: 900;
+  -webkit-text
