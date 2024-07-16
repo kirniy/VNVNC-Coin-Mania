@@ -58,7 +58,7 @@ function App() {
         <div className="fixed top-0 left-0 w-full px-6 pt-8 z-10 flex flex-col items-center text-white">
           <div className="w-full cursor-pointer">
             <div className="bg-[#1f1f1f] text-center py-2 rounded-xl backdrop-blur-md">
-              <a href="https://t.me/SingleDevelopers">
+              <a href="https://t.me/vnvnc_spb">
                 <p className="text-lg">VNVNC COIN MANIA <Arrow size={26} className="ml-0 mb-1 inline-block" /></p>
               </a>
             </div>
