@@ -231,29 +231,34 @@ function App() {
           </div>
         </div>
 
+        <div className="mt-12 text-5xl font-bold flex items-center">
+            <img src='/images/coin.png' width={44} height={44} alt="Coin" />
+            <span className="ml-2">{points.toLocaleString()}</span>
+          </div>
+          <div className="text-base mt-2 flex items-center">
+            <img src='/images/trophy.png' width={24} height={24} alt="Trophy" />
+            <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer">
+              <span className="ml-1">Gold <ChevronRight size={18} className="ml-0 mb-1 inline-block" /></span>
+            </a>
+          </div>
+        </div>
+
         <div className="flex-grow flex items-center justify-center select-none">
-          <div 
-            ref={coinRef}
-            className="relative"
+          <div className="relative mt-4"
             onClick={handleClick}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
             onTouchStart={handleMouseDown}
             onTouchEnd={handleMouseUp} 
-            onTouchCancel={handleMouseUp}
-          >
-            <img 
-              src='/images/notcoin.png' 
-              width={256} 
-              height={256} 
-              alt="notcoin"
+            onTouchCancel={handleMouseUp}>
+            <img src='/images/notcoin.png' width={256} height={256} alt="notcoin"
               draggable="false"
               style={{
                 pointerEvents: 'none',
                 userSelect: 'none',
-                transform: `perspective(1000px) ${isPressed ? 'translateY(4px)' : 'translateY(0px)'} rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-                transition: 'transform 0.1s ease',
+                transform: isPressed ? 'translateY(4px)' : 'translateY(0px)',
+                transition: 'transform 200ms ease',
               }}
               className='select-none'
             />
