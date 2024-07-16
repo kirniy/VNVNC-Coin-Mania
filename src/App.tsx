@@ -16,9 +16,20 @@ type ClickType = {
   y: number;
 };
 
-function App() {
-  const tg = window.Telegram?.WebApp;
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp?: {
+        expand: () => void;
+        HapticFeedback: {
+          impactOccurred: (style: 'light' | 'medium' | 'heavy') => void;
+        };
+      };
+    };
+  }
+}
 
+function App() {
   const [isPressed, setIsPressed] = useState(false);
   const [points, setPoints] = useState(42858169);
   const [energy, setEnergy] = useState(2341);
@@ -31,7 +42,7 @@ function App() {
   const coinRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    tg?.expand();
+    window.Telegram?.WebApp?.expand();
   }, []);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
@@ -121,7 +132,7 @@ function App() {
       setClicks(prev => [...prev, { id: Date.now(), x, y }]);
       
       // Haptic feedback
-      tg?.HapticFeedback.impactOccurred('light');
+      window.Telegram?.WebApp?.HapticFeedback.impactOccurred('light');
     }
   };
 
