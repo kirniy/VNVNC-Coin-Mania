@@ -127,7 +127,7 @@ function App() {
                 pointerEvents: 'none',
                 userSelect: 'none',
                 transform: isPressed ? 'translateY(4px)' : 'translateY(0px)',
-                transition: 'transform 100ms ease',
+                transition: 'transform 200ms ease',
               }}
               className='select-none'
             />
@@ -138,7 +138,7 @@ function App() {
                 style={{
                   top: `${click.y - 42}px`,
                   left: `${click.x - 28}px`,
-                  animation: `float 1s ease-out`,
+                  animation: `float 2s ease-out`,
                   pointerEvents: `none`
                 }}
                 onAnimationEnd={() => handleAnimationEnd(click.id)}
