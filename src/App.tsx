@@ -1,18 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { ChevronRight } from 'lucide-react'
-
-// Add type declaration for Telegram Web App API
-declare global {
-  interface Window {
-    Telegram?: {
-      WebApp?: {
-        HapticFeedback?: {
-          impactOccurred: (style: string) => void;
-        };
-      };
-    };
-  }
-}
+import { useHapticFeedback } from '@vkruglikov/react-telegram-web-app';
 
 type EmojiType = {
   id: number;
@@ -39,8 +26,10 @@ function App() {
   const [clicks, setClicks] = useState<ClickType[]>([]);
   const [lastTapTime, setLastTapTime] = useState(Date.now());
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const animationSpeedRef = useRef(0.5);
+  const animationSpeedRef = useRef(1);
   const coinRef = useRef<HTMLDivElement>(null);
+
+  const [impactOccurred] = useHapticFeedback();
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     setIsPressed(true);
@@ -129,9 +118,7 @@ function App() {
       setClicks(prev => [...prev, { id: Date.now(), x, y }]);
       
       // Haptic feedback
-      if (window.Telegram?.WebApp?.HapticFeedback) {
-        window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
-      }
+      impactOccurred('heavy');
     }
   };
 
@@ -191,18 +178,18 @@ function App() {
   }, []);
 
   return (
-    <div className="bg-gradient-main min-h-screen px-4 flex flex-col items-center text-white font-medium" style={{ userSelect: 'none' }}>
+    <div className="bg-gradient-main min-h-screen flex flex-col items-center text-white font-medium" style={{ userSelect: 'none' }}>
       <div className="absolute inset-0 h-1/2 bg-gradient-overlay z-0"></div>
       <div className="absolute inset-0 flex items-center justify-center z-0">
         <div className="radial-gradient-overlay"></div>
       </div>
 
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
-        <div className="fixed top-0 left-0 w-full px-6 pt-8 z-10 flex flex-col items-center text-white">
+        <div className="fixed top-0 left-0 w-full z-10 flex flex-col items-center text-white">
           <div className="w-full cursor-pointer">
-            <div className="bg-[#1f1f1f] text-center py-4 rounded-xl backdrop-blur-md relative overflow-hidden">
+            <div className="bg-[#1f1f1f] text-center py-4 relative overflow-hidden">
               <a href="https://t.me/vnvnc_spb">
-                <p className="text-2xl relative z-10">VNVNC COIN MANIA <ChevronRight size={24} className="ml-0 mb-1 inline-block" /></p>
+                <p className="text-2xl relative z-10">VNVNC COIN MANIA</p>
               </a>
               {headerEmojis.map(emoji => (
                 <div
@@ -226,7 +213,7 @@ function App() {
           <div className="text-base mt-2 flex items-center">
             <img src='/images/trophy.png' width={24} height={24} alt="Trophy" />
             <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer">
-              <span className="ml-1">Gold <ChevronRight size={18} className="ml-0 mb-1 inline-block" /></span>
+              <span className="ml-1">Gold</span>
             </a>
           </div>
         </div>
