@@ -1,190 +1,159 @@
-import { useState, useEffect } from 'react'
-import Arrow from './assets/Arrow'
-import { Star } from 'lucide-react'
+import React, { useState, useEffect, useCallback } from 'react'
+import { ChevronRight, Star } from 'lucide-react'
 
 function App() {
   const [isPressed, setIsPressed] = useState(false);
-  const [points, setPoints] = useState(42857775);
-  const [energy, setEnergy] = useState(2532);
-  const [clicks, setClicks] = useState<{ id: number, x: number, y: number }[]>([]);
+  const [points, setPoints] = useState(42858062);
+  const [energy, setEnergy] = useState(2342);
   const [floatingEmojis, setFloatingEmojis] = useState<{ id: number, emoji: string, x: number, y: number, size: number, speedX: number, speedY: number }[]>([]);
-  const pointsToAdd = 1;
-  const energyToReduce = 1;
+  const [lastTapTime, setLastTapTime] = useState(Date.now());
+  const [tapCount, setTapCount] = useState(0);
 
   const handleMouseDown = () => setIsPressed(true);
   const handleMouseUp = () => setIsPressed(false);
 
-  const openGithub = () => {
-    window.open('https://t.me/vnvnc_spb');
-  };
-
-  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (energy - energyToReduce < 0) {
-      return;
-    }
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    setPoints(points + pointsToAdd);
-    setEnergy(energy - energyToReduce < 0 ? 0 : energy - energyToReduce);
-    setClicks([...clicks, { id: Date.now(), x, y }]);
-    addFloatingEmoji();
-  };
-
-  const handleAnimationEnd = (id: number) => {
-    setClicks((prevClicks) => prevClicks.filter(click => click.id !== id));
-  };
-
-  const addFloatingEmoji = () => {
-    const emojis = ['⭐️', '⚡️', '🍹', '🎤', '🎉', '🪩'];
-    const newEmoji = {
-      id: Date.now(),
+  const addFloatingEmojis = useCallback(() => {
+    const emojis = ['🎉', '⭐', '💥', '🚀', '💎', '🔥'];
+    const newEmojis = Array(5).fill(null).map(() => ({
+      id: Date.now() + Math.random(),
       emoji: emojis[Math.floor(Math.random() * emojis.length)],
       x: Math.random() * 100,
-      y: 80,
+      y: 100,
       size: Math.random() * 20 + 10,
-      speedX: (Math.random() - 0.5) * 2,
-      speedY: -(Math.random() * 2 + 1)
-    };
-    setFloatingEmojis(prevEmojis => [...prevEmojis, newEmoji]);
+      speedX: (Math.random() - 0.5) * 4,
+      speedY: -(Math.random() * 2 + 1) * (1 + tapCount * 0.1)
+    }));
+    setFloatingEmojis(prev => [...prev, ...newEmojis]);
+    setLastTapTime(Date.now());
+    setTapCount(prev => prev + 1);
+  }, [tapCount]);
+
+  const handleCoinClick = () => {
+    if (energy > 0) {
+      setPoints(prev => prev + 1);
+      setEnergy(prev => Math.max(0, prev - 1));
+      addFloatingEmojis();
+    }
   };
 
   useEffect(() => {
     const animationFrame = requestAnimationFrame(function animate() {
+      const currentTime = Date.now();
+      const timeSinceLastTap = currentTime - lastTapTime;
+      const slowdownFactor = Math.max(0, 1 - timeSinceLastTap / 5000);
+
       setFloatingEmojis(prevEmojis =>
         prevEmojis.map(emoji => ({
           ...emoji,
-          x: emoji.x + emoji.speedX,
-          y: emoji.y + emoji.speedY
-        })).filter(emoji => emoji.y > -10)
+          x: emoji.x + emoji.speedX * slowdownFactor,
+          y: emoji.y + emoji.speedY * slowdownFactor,
+          speedY: emoji.speedY + 0.05 * slowdownFactor
+        })).filter(emoji => emoji.y > -10 && emoji.y < 110)
       );
+
+      if (timeSinceLastTap > 5000) {
+        setTapCount(0);
+      }
+
       requestAnimationFrame(animate);
     });
 
     return () => cancelAnimationFrame(animationFrame);
-  }, []);
+  }, [lastTapTime]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setEnergy((prevEnergy) => Math.min(prevEnergy + 1, 6500));
+      setEnergy(prev => Math.min(prev + 1, 6500));
     }, 800);
-
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="bg-gradient-main min-h-screen px-4 flex flex-col items-center text-white font-medium" style={{ userSelect: `none` }}>
-      <div className="absolute inset-0 h-1/2 bg-gradient-overlay z-0"></div>
-      <div className="absolute inset-0 flex items-center justify-center z-0">
-        <div className="radial-gradient-overlay"></div>
+    <div className="bg-gradient-to-b from-[#1a1a1a] to-[#2a1a0a] min-h-screen flex flex-col items-center text-white font-medium" style={{ userSelect: 'none' }}>
+      <div className="w-full bg-[#2d2d2d] py-4 px-6 flex justify-between items-center mb-8">
+        <div className="text-2xl font-bold flex items-center">
+          🎊 VNVNC COIN MANIA <ChevronRight size={24} />
+        </div>
+        <div className="flex items-center">
+          <Star className="text-yellow-400 mr-2" size={24} />
+          <div className="w-2 h-2 bg-gray-400 rounded-full mx-2"></div>
+          <div className="text-yellow-400">⚡</div>
+        </div>
       </div>
 
-      <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
-        <div className="fixed top-0 left-0 w-full px-6 pt-8 z-10 flex flex-col items-center text-white">
-          <div className="w-full cursor-pointer relative overflow-hidden" style={{ height: '60px' }}>
-            <div className="bg-[#1f1f1f] text-center py-2 rounded-xl backdrop-blur-md">
-              <a href="https://t.me/vnvnc_spb">
-                <p className="text-lg">VNVNC COIN MANIA <Arrow size={18} className="ml-0 mb-1 inline-block" /></p>
-              </a>
+      <div className="text-center mb-8">
+        <div className="flex justify-center items-center">
+          <img src="/coin.png" alt="Coin" className="w-12 h-12 mr-2" />
+          <span className="text-6xl font-bold">{points.toLocaleString()}</span>
+        </div>
+        <div className="mt-2 flex justify-center items-center">
+          <Star size={20} className="text-yellow-400 mr-1" />
+          <span className="text-xl">Gold <ChevronRight size={20} /></span>
+        </div>
+      </div>
+
+      <div className="relative" style={{ width: '256px', height: '256px' }}>
+        <img
+          src="/notcoin.png"
+          alt="VNVNC"
+          className="w-full h-full"
+          style={{
+            transform: isPressed ? 'scale(0.95)' : 'scale(1)',
+            transition: 'transform 100ms ease',
+          }}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onTouchStart={handleMouseDown}
+          onTouchEnd={handleMouseUp}
+          onClick={handleCoinClick}
+        />
+        {floatingEmojis.map(emoji => (
+          <div
+            key={emoji.id}
+            className="absolute pointer-events-none"
+            style={{
+              left: `${emoji.x}%`,
+              top: `${emoji.y}%`,
+              fontSize: `${emoji.size}px`,
+            }}
+          >
+            {emoji.emoji}
+          </div>
+        ))}
+      </div>
+
+      <div className="fixed bottom-0 left-0 w-full px-6 pb-8">
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center">
+            <div className="text-yellow-400 text-3xl mr-2">⚡</div>
+            <div>
+              <div className="text-2xl font-bold">{energy}</div>
+              <div className="text-sm opacity-75">/ 6500</div>
             </div>
-            {floatingEmojis.map(emoji => (
-              <div
-                key={emoji.id}
-                className="absolute text-2xl pointer-events-none"
-                style={{
-                  left: `${emoji.x}%`,
-                  top: `${emoji.y}%`,
-                  fontSize: `${emoji.size}px`,
-                  transition: 'all 0.1s linear'
-                }}
-              >
-                {emoji.emoji}
-              </div>
-            ))}
           </div>
-          <div className="mt-12 text-5xl font-bold flex items-center">
-            <img src='./images/coin.png' width={44} height={44} alt="Coin" />
-            <span className="ml-2">{points.toLocaleString()}</span>
-          </div>
-          <div className="text-base mt-2 flex items-center">
-            <Star size={24} />
-            <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer">
-              <span className="ml-1">Gold <Arrow size={18} className="ml-0 mb-1 inline-block" /></span>
-            </a>
+          <div className="bg-[#fad258] rounded-full py-2 px-6 flex justify-around items-center">
+            <button className="flex flex-col items-center mx-4">
+              <img src="/bear.png" alt="Frens" className="w-8 h-8 mb-1" />
+              <span className="text-xs">Frens</span>
+            </button>
+            <div className="w-px h-8 bg-[#fddb6d]"></div>
+            <button className="flex flex-col items-center mx-4">
+              <img src="/coin.png" alt="Earn" className="w-8 h-8 mb-1" />
+              <span className="text-xs">Earn</span>
+            </button>
+            <div className="w-px h-8 bg-[#fddb6d]"></div>
+            <button className="flex flex-col items-center mx-4">
+              <img src="/rocket.png" alt="Boosts" className="w-8 h-8 mb-1" />
+              <span className="text-xs">Boosts</span>
+            </button>
           </div>
         </div>
-
-        <div className="fixed bottom-0 left-0 w-full px-6 pb-8 z-10">
-          <div className="w-full flex justify-between gap-2">
-            <div className="w-1/3 flex items-center justify-start max-w-32">
-              <div className="flex items-center justify-center">
-                <img src='./images/high-voltage.png' width={44} height={44} alt="High Voltage" />
-                <div className="ml-2 text-left">
-                  <span className="text-white text-2xl font-bold block">{energy}</span>
-                  <span className="text-white text-large opacity-75">/ 6500</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex-grow flex items-center max-w-60 text-sm">
-              <div className="w-full bg-[#fad258] py-4 rounded-2xl flex justify-around">
-                <button className="flex flex-col items-center gap-1" onClick={openGithub}>
-                  <img src='./images/bear.png' width={24} height={24} alt="Bear"/>
-                  <span>Frens</span>
-                </button>
-                <div className="h-[48px] w-[2px] bg-[#fddb6d]"></div>
-                <button className="flex flex-col items-center gap-1" onClick={openGithub}>
-                  <img src='./images/coin.png' width={24} height={24} alt="Coin" />
-                  <span>Earn</span>
-                </button>
-                <div className="h-[48px] w-[2px] bg-[#fddb6d]"></div>
-                <button className="flex flex-col items-center gap-1" onClick={openGithub}>
-                  <img src='./images/rocket.png' width={24} height={24} alt="Rocket" />
-                  <span>Boosts</span>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="w-full bg-[#f9c035] rounded-full mt-4">
-            <div className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" style={{ width: `${(energy / 6500) * 100}%` }}></div>
-          </div>
-        </div>
-
-        <div className="flex-grow flex items-center justify-center select-none">
-          <div className="relative mt-4"
-            onClick={handleClick}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            onTouchStart={handleMouseDown}
-            onTouchEnd={handleMouseUp} 
-            onTouchCancel={handleMouseUp}>
-            <img src='./images/notcoin.png' width={256} height={256} alt="notcoin"
-              draggable="false"
-              style={{
-                pointerEvents: 'none',
-                userSelect: 'none',
-                transform: isPressed ? 'translateY(4px)' : 'translateY(0px)',
-                transition: 'transform 200ms ease',
-              }}
-              className='select-none'
-            />
-            {clicks.map((click) => (
-              <div
-                key={click.id}
-                className="absolute text-5xl font-bold opacity-0"
-                style={{
-                  top: `${click.y - 42}px`,
-                  left: `${click.x - 28}px`,
-                  animation: `float 2s ease-out`,
-                  pointerEvents: `none`
-                }}
-                onAnimationEnd={() => handleAnimationEnd(click.id)}
-              >
-                {energyToReduce}
-              </div>
-            ))}
-          </div>
+        <div className="w-full bg-[#f9c035] rounded-full h-4 overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-[#f3c45a] to-[#fffad0]"
+            style={{ width: `${(energy / 6500) * 100}%` }}
+          ></div>
         </div>
       </div>
     </div>
