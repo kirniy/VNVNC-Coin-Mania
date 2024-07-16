@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { ChevronRight } from 'lucide-react'
 
 type EmojiType = {
   id: number;
@@ -27,10 +26,10 @@ function App() {
   const [lastTapTime, setLastTapTime] = useState(Date.now());
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const headerSpeedRef = useRef(1);
-  const coinSpeedRef = useRef(1);
+  const coinSpeedRef = useRef(0.5);
   const coinRef = useRef<HTMLDivElement>(null);
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     setIsPressed(true);
     handleTilt(e);
   };
@@ -40,11 +39,19 @@ function App() {
     setTilt({ x: 0, y: 0 });
   };
 
-  const handleTilt = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleTilt = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     if (coinRef.current) {
       const rect = coinRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
+      let clientX, clientY;
+      if ('touches' in e) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+      const x = clientX - rect.left - rect.width / 2;
+      const y = clientY - rect.top - rect.height / 2;
       const tiltX = (y / rect.height) * 30;
       const tiltY = -(x / rect.width) * 30;
       setTilt({ x: tiltX, y: tiltY });
@@ -90,15 +97,28 @@ function App() {
     setLastTapTime(Date.now());
   }, []);
 
-  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     if (energy > 0) {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const rect = coinRef.current!.getBoundingClientRect();
+      let clientX, clientY;
+      if ('touches' in e) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
       setPoints(prev => prev + 1);
       setEnergy(prev => Math.max(0, prev - 1));
       addCoinEmojis(x, y);
       setClicks(prev => [...prev, { id: Date.now(), x, y }]);
+      
+      // Haptic feedback
+      if (window.Telegram?.WebApp?.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
+      }
     }
   };
 
@@ -150,7 +170,7 @@ function App() {
   }, []);
 
   return (
-    <div className="bg-gradient-main h-[100vh] px-4 flex flex-col items-center text-white font-medium" style={{ userSelect: `none` }}>
+    <div className="bg-gradient-main h-screen px-4 flex flex-col items-center text-white font-medium overflow-hidden" style={{ userSelect: 'none' }}>
       <div className="absolute inset-0 h-1/2 bg-gradient-overlay z-0"></div>
       <div className="absolute inset-0 flex items-center justify-center z-0">
         <div className="radial-gradient-overlay"></div>
@@ -159,8 +179,8 @@ function App() {
       <div className="w-full z-10 h-full flex flex-col items-center text-white">
         <div className="fixed top-0 left-0 w-full z-10">
           <div className="w-full bg-[#1f1f1f] py-6 relative overflow-hidden">
-            <div className="text-3xl font-bold text-center relative z-10">
-              🎊 VNVNC COIN MANIA <ChevronRight size={30} className="inline-block" />
+            <div className="text-3xl font-extrabold text-center relative z-10 header-text">
+              🎊 VNVNC COIN MANIA
             </div>
             {headerEmojis.map(emoji => (
               <div
@@ -186,7 +206,7 @@ function App() {
           <div className="mt-2 flex justify-center items-center">
             <img src='/images/trophy.png' width={24} height={24} alt="Trophy" className="mr-2" />
             <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer" className="text-xl">
-              Gold <ChevronRight size={20} className="inline-block" />
+              Gold
             </a>
           </div>
         </div>
