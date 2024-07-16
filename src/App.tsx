@@ -185,35 +185,34 @@ function App() {
       </div>
 
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
-        <div className="fixed top-0 left-0 w-full z-10 flex flex-col items-center text-white">
-          <div className="w-full cursor-pointer">
-            <div className="bg-[#1f1f1f] text-center py-4 relative overflow-hidden">
-              <a href="https://t.me/vnvnc_spb">
-                <p className="text-2xl relative z-10">VNVNC COIN MANIA</p>
-              </a>
-              {headerEmojis.map(emoji => (
-                <div
-                  key={emoji.id}
-                  className="absolute text-2xl pointer-events-none"
-                  style={{
-                    left: `${emoji.x}%`,
-                    top: `${emoji.y}%`,
-                    fontSize: `${emoji.size}px`,
-                  }}
-                >
-                  {emoji.emoji}
-                </div>
-              ))}
-            </div>
+        <div className="fixed top-0 left-0 w-full z-10">
+          <div className="bg-[#1f1f1f] text-center py-4 relative overflow-hidden">
+            <p className="text-2xl relative z-10">VNVNC COIN MANIA</p>
+            {headerEmojis.map(emoji => (
+              <div
+                key={emoji.id}
+                className="absolute text-2xl pointer-events-none"
+                style={{
+                  left: `${emoji.x}%`,
+                  top: `${emoji.y}%`,
+                  fontSize: `${emoji.size}px`,
+                }}
+              >
+                {emoji.emoji}
+              </div>
+            ))}
           </div>
-          <div className="mt-12 text-5xl font-bold flex items-center">
-            <img src='/images/coin.png' width={44} height={44} alt="Coin" />
-            <span className="ml-2">{points.toLocaleString()}</span>
+        </div>
+
+        <div className="mt-24 text-center">
+          <div className="flex justify-center items-center">
+            <img src='/images/coin.png' width={60} height={60} alt="Coin" className="mr-4" />
+            <span className="text-6xl font-bold">{points.toLocaleString()}</span>
           </div>
-          <div className="text-base mt-2 flex items-center">
-            <img src='/images/trophy.png' width={24} height={24} alt="Trophy" />
-            <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer">
-              <span className="ml-1">Gold</span>
+          <div className="mt-2 flex justify-center items-center">
+            <img src='/images/trophy.png' width={24} height={24} alt="Trophy" className="mr-2" />
+            <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer" className="text-xl">
+              Gold
             </a>
           </div>
         </div>
@@ -276,13 +275,13 @@ function App() {
         </div>
 
         <div className="fixed bottom-0 left-0 w-full px-6 pb-8 z-10">
-          <div className="w-full flex justify-between gap-2">
+          <div className="w-full flex justify-between gap-2 mb-4">
             <div className="w-1/3 flex items-center justify-start max-w-32">
               <div className="flex items-center justify-center">
                 <img src='/images/high-voltage.png' width={44} height={44} alt="High Voltage" />
                 <div className="ml-2 text-left">
                   <span className="text-white text-2xl font-bold block">{energy}</span>
-                  <span className="text-white text-large opacity-75">/ 6500</span>
+                  <span className="text-white text-sm opacity-75">/ 6500</span>
                 </div>
               </div>
             </div>
@@ -297,21 +296,4 @@ function App() {
                   <img src='/images/coin.png' width={24} height={24} alt="Earn" />
                   <span>Earn</span>
                 </button>
-                <div className="h-[48px] w-[2px] bg-[#fddb6d]"></div>
-                <button className="flex flex-col items-center gap-1" onClick={openGithub}>
-                  <img src='/images/rocket.png' width={24} height={24} alt="Boosts" />
-                  <span>Boosts</span>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="w-full bg-[#f9c035] rounded-full mt-4">
-            <div className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" style={{ width: `${(energy / 6500) * 100}%` }}></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default App
+                <div className
