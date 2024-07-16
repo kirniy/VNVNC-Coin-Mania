@@ -1,3 +1,6 @@
+declare module '@vkruglikov/react-telegram-web-app' {
+  export function useHapticFeedback(): [(style: 'impact' | 'notification' | 'selection') => void];
+}
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useHapticFeedback } from '@vkruglikov/react-telegram-web-app';
 
