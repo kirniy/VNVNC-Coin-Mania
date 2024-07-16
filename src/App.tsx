@@ -40,7 +40,7 @@ function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       setEnergy((prevEnergy) => Math.min(prevEnergy + 1, 6500));
-    }, 200); // Resporce energy every 200ms
+    }, 800); // Resporce energy every 200ms
 
     return () => clearInterval(interval); // Clear interval on component unmount
   }, []);
