@@ -17,6 +17,18 @@ type ClickType = {
   y: number;
 };
 
+declare global {
+  interface Window {
+    Telegram: {
+      WebApp: {
+        hapticFeedback: {
+          impactOccurred: (style: 'light' | 'medium' | 'heavy') => void;
+        };
+      };
+    };
+  }
+}
+
 function App() {
   const [isPressed, setIsPressed] = useState(false);
   const [points, setPoints] = useState(42858169);
@@ -78,6 +90,11 @@ function App() {
       setEnergy(prev => Math.max(0, prev - 1));
       addCoinEmojis(x, y);
       setClicks(prev => [...prev, { id: Date.now(), x, y }]);
+      
+      // Haptic feedback
+      if (window.Telegram?.WebApp?.hapticFeedback) {
+        window.Telegram.WebApp.hapticFeedback.impactOccurred('medium');
+      }
     }
   };
 
@@ -126,18 +143,18 @@ function App() {
   }, []);
 
   return (
-    <div className="bg-gradient-main min-h-screen px-4 flex flex-col items-center text-white font-medium" style={{ userSelect: `none` }}>
+    <div className="bg-gradient-main min-h-screen flex flex-col items-center text-white font-medium" style={{ userSelect: `none` }}>
       <div className="absolute inset-0 h-1/2 bg-gradient-overlay z-0"></div>
       <div className="absolute inset-0 flex items-center justify-center z-0">
         <div className="radial-gradient-overlay"></div>
       </div>
 
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
-        <div className="fixed top-0 left-0 w-full px-6 pt-8 z-10 flex flex-col items-center text-white">
+        <div className="fixed top-0 left-0 w-full z-10 flex flex-col items-center text-white">
           <div className="w-full cursor-pointer">
-            <div className="bg-[#1f1f1f] text-center py-4 rounded-xl backdrop-blur-md relative overflow-hidden">
+            <div className="bg-[#1f1f1f] text-center py-6 relative overflow-hidden">
               <a href="https://t.me/vnvnc_spb">
-                <p className="text-2xl relative z-10">VNVNC COIN MANIA <ChevronRight size={24} className="ml-0 mb-1 inline-block" /></p>
+                <p className="text-3xl relative z-10">VNVNC COIN MANIA <ChevronRight size={30} className="ml-0 mb-1 inline-block" /></p>
               </a>
               {headerEmojis.map(emoji => (
                 <div
