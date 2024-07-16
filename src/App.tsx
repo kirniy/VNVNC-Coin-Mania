@@ -49,26 +49,29 @@ function App() {
     setHeaderEmojis(createInitialHeaderEmojis(10));
   }, [createInitialHeaderEmojis]);
 
-  const addCoinEmojis = useCallback(() => {
-    const newEmojis = Array(5).fill(null).map(() => ({
+  const addCoinEmojis = useCallback((x: number, y: number) => {
+    const newEmojis = Array(15).fill(null).map(() => ({
       id: Date.now() + Math.random(),
       emoji: getRandomEmoji(),
-      x: Math.random() * 200 - 50,
-      y: Math.random() * 200 - 50,
+      x: x + (Math.random() - 0.5) * 100,
+      y: y + (Math.random() - 0.5) * 100,
       size: Math.random() * 20 + 10,
-      speedX: (Math.random() - 0.5) * 1,
-      speedY: -(Math.random() * 0.5 + 0.25)
+      speedX: (Math.random() - 0.5) * 2,
+      speedY: -(Math.random() * 1 + 0.5)
     }));
     setCoinEmojis(prev => [...prev, ...newEmojis]);
     coinSpeedRef.current = Math.min(coinSpeedRef.current + 0.1, 1.5);
-    headerSpeedRef.current = Math.min(headerSpeedRef.current + 0.2, 2);
+    headerSpeedRef.current = Math.min(headerSpeedRef.current + 0.01, 2);
   }, []);
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (energy > 0) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
       setPoints(prev => prev + 1);
       setEnergy(prev => Math.max(0, prev - 1));
-      addCoinEmojis();
+      addCoinEmojis(x, y);
       setLastTapTime(Date.now());
     }
   };
@@ -96,7 +99,7 @@ function App() {
           ...emoji,
           x: emoji.x + emoji.speedX * coinSpeedRef.current,
           y: emoji.y + emoji.speedY * coinSpeedRef.current,
-          speedY: emoji.speedY + 0.01 * coinSpeedRef.current
+          speedY: emoji.speedY + 0.05 * coinSpeedRef.current
         })).filter(emoji => {
           const age = currentTime - emoji.id;
           return age < 2000 && emoji.y < 300;
@@ -124,25 +127,27 @@ function App() {
       </div>
 
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
-        <div className="fixed top-0 left-0 w-full z-10">
-          <div className="w-full bg-[#1f1f1f] py-4 px-6 relative overflow-hidden">
-            <div className="text-2xl font-bold text-center relative z-10">
-              🎊 VNVNC COIN MANIA <ChevronRight size={24} className="inline-block" />
+        <div className="fixed top-0 left-0 w-full px-6 pt-8 z-10 flex flex-col items-center text-white">
+          <div className="w-full cursor-pointer">
+            <div className="bg-[#1f1f1f] text-center py-2 rounded-xl backdrop-blur-md">
+              <a href="https://t.me/vnvnc_spb">
+                <p className="text-lg">VNVNC COIN MANIA <ChevronRight size={18} className="ml-0 mb-1 inline-block" /></p>
+              </a>
             </div>
-            {headerEmojis.map(emoji => (
-              <div
-                key={emoji.id}
-                className="absolute text-2xl pointer-events-none"
-                style={{
-                  left: `${emoji.x}%`,
-                  top: `${emoji.y}%`,
-                  fontSize: `${emoji.size}px`,
-                }}
-              >
-                {emoji.emoji}
-              </div>
-            ))}
           </div>
+          {headerEmojis.map(emoji => (
+            <div
+              key={emoji.id}
+              className="absolute text-2xl pointer-events-none"
+              style={{
+                left: `${emoji.x}%`,
+                top: `${emoji.y}%`,
+                fontSize: `${emoji.size}px`,
+              }}
+            >
+              {emoji.emoji}
+            </div>
+          ))}
         </div>
 
         <div className="mt-24 text-center">
@@ -158,8 +163,8 @@ function App() {
           </div>
         </div>
 
-        <div className="flex-grow flex items-center justify-center select-none mt-8">
-          <div className="relative"
+        <div className="flex-grow flex items-center justify-center select-none">
+          <div className="relative mt-4"
             onClick={handleClick}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
@@ -194,13 +199,13 @@ function App() {
         </div>
 
         <div className="fixed bottom-0 left-0 w-full px-6 pb-8 z-10">
-          <div className="w-full flex justify-between gap-2 mb-4">
+          <div className="w-full flex justify-between gap-2">
             <div className="w-1/3 flex items-center justify-start max-w-32">
               <div className="flex items-center justify-center">
                 <img src='/images/high-voltage.png' width={44} height={44} alt="High Voltage" />
                 <div className="ml-2 text-left">
                   <span className="text-white text-2xl font-bold block">{energy}</span>
-                  <span className="text-white text-sm opacity-75">/ 6500</span>
+                  <span className="text-white text-large opacity-75">/ 6500</span>
                 </div>
               </div>
             </div>
@@ -223,7 +228,7 @@ function App() {
               </div>
             </div>
           </div>
-          <div className="w-full bg-[#f9c035] rounded-full">
+          <div className="w-full bg-[#f9c035] rounded-full mt-4">
             <div className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" style={{ width: `${(energy / 6500) * 100}%` }}></div>
           </div>
         </div>
