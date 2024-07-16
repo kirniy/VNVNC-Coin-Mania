@@ -11,15 +11,22 @@ type EmojiType = {
   speedY: number;
 };
 
+type ClickType = {
+  id: number;
+  x: number;
+  y: number;
+};
+
 function App() {
   const [isPressed, setIsPressed] = useState(false);
   const [points, setPoints] = useState(42858169);
   const [energy, setEnergy] = useState(2341);
   const [headerEmojis, setHeaderEmojis] = useState<EmojiType[]>([]);
   const [coinEmojis, setCoinEmojis] = useState<EmojiType[]>([]);
+  const [clicks, setClicks] = useState<ClickType[]>([]);
   const [lastTapTime, setLastTapTime] = useState(Date.now());
-  const headerSpeedRef = useRef(1);
-  const coinSpeedRef = useRef(1);
+  const headerSpeedRef = useRef(0.3); // Reduced max speed by 70%
+  const coinSpeedRef = useRef(0.7); // Slowed down by 30%
 
   const handleMouseDown = () => setIsPressed(true);
   const handleMouseUp = () => setIsPressed(false);
@@ -39,14 +46,14 @@ function App() {
       emoji: getRandomEmoji(),
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 20 + 10,
+      size: Math.random() * 24 + 16, // Slightly bigger emojis
       speedX: (Math.random() - 0.5) * 2,
       speedY: (Math.random() - 0.5) * 2
     }));
   }, []);
 
   useEffect(() => {
-    setHeaderEmojis(createInitialHeaderEmojis(10));
+    setHeaderEmojis(createInitialHeaderEmojis(7)); // 30% less emojis
   }, [createInitialHeaderEmojis]);
 
   const addCoinEmojis = useCallback((x: number, y: number) => {
@@ -56,12 +63,12 @@ function App() {
       x: x + (Math.random() - 0.5) * 100,
       y: y + (Math.random() - 0.5) * 100,
       size: Math.random() * 20 + 10,
-      speedX: (Math.random() - 0.5) * 2,
-      speedY: -(Math.random() * 1 + 0.5)
+      speedX: (Math.random() - 0.5) * 2 * coinSpeedRef.current,
+      speedY: -(Math.random() * 1 + 0.5) * coinSpeedRef.current
     }));
     setCoinEmojis(prev => [...prev, ...newEmojis]);
-    coinSpeedRef.current = Math.min(coinSpeedRef.current + 0.1, 1.5);
-    headerSpeedRef.current = Math.min(headerSpeedRef.current + 0.01, 2);
+    coinSpeedRef.current = Math.min(coinSpeedRef.current + 0.07, 1.05); // Adjusted for slower effect
+    headerSpeedRef.current = Math.min(headerSpeedRef.current + 0.06, 0.6); // Adjusted for 70% reduction
   }, []);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -72,8 +79,13 @@ function App() {
       setPoints(prev => prev + 1);
       setEnergy(prev => Math.max(0, prev - 1));
       addCoinEmojis(x, y);
+      setClicks(prev => [...prev, { id: Date.now(), x, y }]);
       setLastTapTime(Date.now());
     }
+  };
+
+  const handleAnimationEnd = (id: number) => {
+    setClicks(prevClicks => prevClicks.filter(click => click.id !== id));
   };
 
   useEffect(() => {
@@ -82,8 +94,8 @@ function App() {
       const timeSinceLastTap = currentTime - lastTapTime;
       
       if (timeSinceLastTap > 5000) {
-        headerSpeedRef.current = Math.max(headerSpeedRef.current - 0.01, 1);
-        coinSpeedRef.current = Math.max(coinSpeedRef.current - 0.01, 1);
+        headerSpeedRef.current = Math.max(headerSpeedRef.current - 0.01, 0);
+        coinSpeedRef.current = Math.max(coinSpeedRef.current - 0.01, 0.7);
       }
 
       setHeaderEmojis(prevEmojis =>
@@ -97,9 +109,9 @@ function App() {
       setCoinEmojis(prevEmojis =>
         prevEmojis.map(emoji => ({
           ...emoji,
-          x: emoji.x + emoji.speedX * coinSpeedRef.current,
-          y: emoji.y + emoji.speedY * coinSpeedRef.current,
-          speedY: emoji.speedY + 0.05 * coinSpeedRef.current
+          x: emoji.x + emoji.speedX,
+          y: emoji.y + emoji.speedY,
+          speedY: emoji.speedY + 0.05
         })).filter(emoji => {
           const age = currentTime - emoji.id;
           return age < 2000 && emoji.y < 300;
@@ -129,36 +141,33 @@ function App() {
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
         <div className="fixed top-0 left-0 w-full px-6 pt-8 z-10 flex flex-col items-center text-white">
           <div className="w-full cursor-pointer">
-            <div className="bg-[#1f1f1f] text-center py-2 rounded-xl backdrop-blur-md">
+            <div className="bg-[#1f1f1f] text-center py-2 rounded-xl backdrop-blur-md relative overflow-hidden">
               <a href="https://t.me/vnvnc_spb">
-                <p className="text-lg">VNVNC COIN MANIA <ChevronRight size={18} className="ml-0 mb-1 inline-block" /></p>
+                <p className="text-lg relative z-10">VNVNC COIN MANIA <ChevronRight size={18} className="ml-0 mb-1 inline-block" /></p>
               </a>
+              {headerEmojis.map(emoji => (
+                <div
+                  key={emoji.id}
+                  className="absolute text-2xl pointer-events-none"
+                  style={{
+                    left: `${emoji.x}%`,
+                    top: `${emoji.y}%`,
+                    fontSize: `${emoji.size}px`,
+                  }}
+                >
+                  {emoji.emoji}
+                </div>
+              ))}
             </div>
           </div>
-          {headerEmojis.map(emoji => (
-            <div
-              key={emoji.id}
-              className="absolute text-2xl pointer-events-none"
-              style={{
-                left: `${emoji.x}%`,
-                top: `${emoji.y}%`,
-                fontSize: `${emoji.size}px`,
-              }}
-            >
-              {emoji.emoji}
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-24 text-center">
-          <div className="flex justify-center items-center">
-            <img src='/images/coin.png' width={60} height={60} alt="Coin" className="mr-4" />
-            <span className="text-6xl font-bold">{points.toLocaleString()}</span>
+          <div className="mt-12 text-5xl font-bold flex items-center">
+            <img src='/images/coin.png' width={44} height={44} alt="Coin" />
+            <span className="ml-2">{points.toLocaleString()}</span>
           </div>
-          <div className="mt-2 flex justify-center items-center">
-            <img src='/images/trophy.png' width={24} height={24} alt="Trophy" className="mr-2" />
-            <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer" className="text-xl">
-              Gold <ChevronRight size={20} className="inline-block" />
+          <div className="text-base mt-2 flex items-center">
+            <img src='/images/trophy.png' width={24} height={24} alt="Trophy" />
+            <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer">
+              <span className="ml-1">Gold <ChevronRight size={18} className="ml-0 mb-1 inline-block" /></span>
             </a>
           </div>
         </div>
@@ -193,6 +202,21 @@ function App() {
                 }}
               >
                 {emoji.emoji}
+              </div>
+            ))}
+            {clicks.map((click) => (
+              <div
+                key={click.id}
+                className="absolute text-5xl font-bold opacity-0"
+                style={{
+                  top: `${click.y - 42}px`,
+                  left: `${click.x - 28}px`,
+                  animation: `float 2s ease-out`,
+                  pointerEvents: `none`
+                }}
+                onAnimationEnd={() => handleAnimationEnd(click.id)}
+              >
+                +1
               </div>
             ))}
           </div>
