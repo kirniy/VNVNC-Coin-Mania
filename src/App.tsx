@@ -16,7 +16,7 @@ function App() {
   const handleMouseUp = () => setIsPressed(false);
 
   const openGithub = () => {
-    window.open('https://github.com/Malith-Rukshan/NotCoin-Mini-App-Clone');
+    window.open('https://t.me/vnvnc_spb');
   };
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -121,7 +121,7 @@ function App() {
             onTouchStart={handleMouseDown}
             onTouchEnd={handleMouseUp} 
             onTouchCancel={handleMouseUp}>
-            <img src='./images/notcoin.png' width={256} height={256} alt="notcoin"
+            <img src='./images/notcoin.png' width={356} height={356} alt="notcoin"
               draggable="false"
               style={{
                 pointerEvents: 'none',
