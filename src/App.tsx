@@ -59,7 +59,7 @@ function App() {
           <div className="w-full cursor-pointer">
             <div className="bg-[#1f1f1f] text-center py-2 rounded-xl backdrop-blur-md">
               <a href="https://t.me/SingleDevelopers">
-                <p className="text-lg">Join squad <Arrow size={18} className="ml-0 mb-1 inline-block" /></p>
+                <p className="text-lg">VNVNC COIN MANIA <Arrow size={26} className="ml-0 mb-1 inline-block" /></p>
               </a>
             </div>
           </div>
@@ -69,7 +69,7 @@ function App() {
           </div>
           <div className="text-base mt-2 flex items-center">
             <img src='./images/trophy.png' width={24} height={24} />
-            <a href="https://github.com/Malith-Rukshan" target="_blank" rel="noopener noreferrer">
+            <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer">
               <span className="ml-1">Gold <Arrow size={18} className="ml-0 mb-1 inline-block" /></span>
             </a>
           </div>
