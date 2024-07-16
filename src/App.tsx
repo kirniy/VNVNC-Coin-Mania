@@ -1,11 +1,6 @@
-// First, install Lucide React by running this command in your project directory:
-// npm install lucide-react
-// or if you're using yarn:
-// yarn add lucide-react
-
 import { useState, useEffect } from 'react'
 import Arrow from './assets/Arrow'
-import { Star } from 'lucide-react' // Import the Star icon from Lucide React
+import { Star } from 'lucide-react'
 
 function App() {
   const [isPressed, setIsPressed] = useState(false);
@@ -47,10 +42,10 @@ function App() {
       id: Date.now(),
       emoji: emojis[Math.floor(Math.random() * emojis.length)],
       x: Math.random() * 100,
-      y: 80, // Start from the bottom of the header
+      y: 80,
       size: Math.random() * 20 + 10,
       speedX: (Math.random() - 0.5) * 2,
-      speedY: -(Math.random() * 2 + 1) // Negative speed to move upwards
+      speedY: -(Math.random() * 2 + 1)
     };
     setFloatingEmojis(prevEmojis => [...prevEmojis, newEmoji]);
   };
@@ -62,7 +57,7 @@ function App() {
           ...emoji,
           x: emoji.x + emoji.speedX,
           y: emoji.y + emoji.speedY
-        })).filter(emoji => emoji.y > -10) // Remove emojis that have floated off the top
+        })).filter(emoji => emoji.y > -10)
       );
       requestAnimationFrame(animate);
     });
@@ -80,14 +75,12 @@ function App() {
 
   return (
     <div className="bg-gradient-main min-h-screen px-4 flex flex-col items-center text-white font-medium" style={{ userSelect: `none` }}>
-
       <div className="absolute inset-0 h-1/2 bg-gradient-overlay z-0"></div>
       <div className="absolute inset-0 flex items-center justify-center z-0">
         <div className="radial-gradient-overlay"></div>
       </div>
 
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
-
         <div className="fixed top-0 left-0 w-full px-6 pt-8 z-10 flex flex-col items-center text-white">
           <div className="w-full cursor-pointer relative overflow-hidden" style={{ height: '60px' }}>
             <div className="bg-[#1f1f1f] text-center py-2 rounded-xl backdrop-blur-md">
@@ -111,17 +104,16 @@ function App() {
             ))}
           </div>
           <div className="mt-12 text-5xl font-bold flex items-center">
-            <img src='./images/coin.png' width={44} height={44} />
+            <img src='./images/coin.png' width={44} height={44} alt="Coin" />
             <span className="ml-2">{points.toLocaleString()}</span>
           </div>
           <div className="text-base mt-2 flex items-center">
-            <Star size={24} /> {/* Using Lucide React Star icon */}
+            <Star size={24} />
             <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer">
               <span className="ml-1">Gold <Arrow size={18} className="ml-0 mb-1 inline-block" /></span>
             </a>
           </div>
         </div>
-
 
         <div className="fixed bottom-0 left-0 w-full px-6 pb-8 z-10">
           <div className="w-full flex justify-between gap-2">
@@ -137,17 +129,17 @@ function App() {
             <div className="flex-grow flex items-center max-w-60 text-sm">
               <div className="w-full bg-[#fad258] py-4 rounded-2xl flex justify-around">
                 <button className="flex flex-col items-center gap-1" onClick={openGithub}>
-                  <img src='./images/bear.png' width={24} height={24} alt="High Voltage"/>
+                  <img src='./images/bear.png' width={24} height={24} alt="Bear"/>
                   <span>Frens</span>
                 </button>
                 <div className="h-[48px] w-[2px] bg-[#fddb6d]"></div>
                 <button className="flex flex-col items-center gap-1" onClick={openGithub}>
-                  <img src='./images/coin.png' width={24} height={24} alt="High Voltage" />
+                  <img src='./images/coin.png' width={24} height={24} alt="Coin" />
                   <span>Earn</span>
                 </button>
                 <div className="h-[48px] w-[2px] bg-[#fddb6d]"></div>
                 <button className="flex flex-col items-center gap-1" onClick={openGithub}>
-                  <img src='./images/rocket.png' width={24} height={24} alt="High Voltage" />
+                  <img src='./images/rocket.png' width={24} height={24} alt="Rocket" />
                   <span>Boosts</span>
                 </button>
               </div>
@@ -157,7 +149,6 @@ function App() {
             <div className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" style={{ width: `${(energy / 6500) * 100}%` }}></div>
           </div>
         </div>
-
 
         <div className="flex-grow flex items-center justify-center select-none">
           <div className="relative mt-4"
@@ -195,11 +186,9 @@ function App() {
             ))}
           </div>
         </div>
-
       </div>
     </div>
   )
 }
 
 export default App
-
