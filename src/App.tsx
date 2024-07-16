@@ -121,7 +121,7 @@ function App() {
             onTouchStart={handleMouseDown}
             onTouchEnd={handleMouseUp} 
             onTouchCancel={handleMouseUp}>
-            <img src='./images/notcoin.png' width={356} height={356} alt="notcoin"
+            <img src='./images/notcoin.png' width={276} height={276} alt="notcoin"
               draggable="false"
               style={{
                 pointerEvents: 'none',
