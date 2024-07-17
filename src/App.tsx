@@ -174,15 +174,12 @@ function App() {
       );
 
       setCoinEmojis(prevEmojis =>
-        prevEmojis.map(emoji => {
-          const age = (currentTime - emoji.createdAt) / 1000;
-          return {
-            ...emoji,
-            x: emoji.x + emoji.speedX * deltaTime,
-            y: emoji.y + emoji.speedY * deltaTime + (0.5 * 500 * deltaTime * deltaTime),
-            speedY: emoji.speedY + 500 * deltaTime
-          };
-        }).filter(emoji => {
+        prevEmojis.map(emoji => ({
+          ...emoji,
+          x: emoji.x + emoji.speedX * deltaTime,
+          y: emoji.y + emoji.speedY * deltaTime + (0.5 * 500 * deltaTime * deltaTime),
+          speedY: emoji.speedY + 500 * deltaTime
+        })).filter(emoji => {
           const age = (currentTime - emoji.createdAt) / 1000;
           return age < 2 && emoji.y < window.innerHeight && emoji.y > -50;
         })
