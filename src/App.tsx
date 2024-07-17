@@ -104,18 +104,18 @@ function App() {
   }, [createInitialHeaderEmojis]);
 
   const addCoinEmojis = useCallback((x: number, y: number) => {
-    const newEmojis = Array(15).fill(null).map(() => ({
-      id: Date.now() + Math.random(),
-      emoji: getRandomEmoji(),
-      x: x + (Math.random() - 0.5) * 100,
-      y: y + (Math.random() - 0.5) * 100,
-      size: Math.random() * 20 + 10,
-      speedX: (Math.random() - 0.5) * 1,
-      speedY: -(Math.random() * 0.5 + 0.25)
-    }));
-    setCoinEmojis(prev => [...prev, ...newEmojis]);
-    setLastTapTime(Date.now());
-  }, []);
+  const newEmojis = Array(15).fill(null).map(() => ({
+    id: Date.now() + Math.random(),
+    emoji: getRandomEmoji(),
+    x: x + (Math.random() - 0.5) * 100,
+    y: y + (Math.random() - 0.5) * 100,
+    size: Math.random() * 20 + 10,
+    speedX: (Math.random() - 0.5) * 0.4, // Reduced from 1 to 0.4
+    speedY: -(Math.random() * 0.2 + 0.1) // Reduced from 0.5 to 0.2
+  }));
+  setCoinEmojis(prev => [...prev, ...newEmojis]);
+  setLastTapTime(Date.now());
+}, []);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     if (energy > 0 && coinRef.current) {
@@ -146,38 +146,38 @@ function App() {
     setClicks(prevClicks => prevClicks.filter(click => click.id !== id));
   };
 
-  useEffect(() => {
-    const animationFrame = requestAnimationFrame(function animate() {
-      const currentTime = Date.now();
-      const timeSinceLastTap = currentTime - lastTapTime;
-      
-      animationSpeedRef.current = timeSinceLastTap > 2000 ? 0.2 : 1;
+useEffect(() => {
+  const animationFrame = requestAnimationFrame(function animate() {
+    const currentTime = Date.now();
+    const timeSinceLastTap = currentTime - lastTapTime;
+    
+    animationSpeedRef.current = timeSinceLastTap > 2000 ? 0.2 : 1;
 
-      setHeaderEmojis(prevEmojis =>
-        prevEmojis.map(emoji => ({
-          ...emoji,
-          x: (emoji.x + emoji.speedX * animationSpeedRef.current + 100) % 100,
-          y: (emoji.y + emoji.speedY * animationSpeedRef.current + 100) % 100,
-        }))
-      );
+    setHeaderEmojis(prevEmojis =>
+      prevEmojis.map(emoji => ({
+        ...emoji,
+        x: (emoji.x + emoji.speedX * animationSpeedRef.current + 100) % 100,
+        y: (emoji.y + emoji.speedY * animationSpeedRef.current + 100) % 100,
+      }))
+    );
 
-      setCoinEmojis(prevEmojis =>
-        prevEmojis.map(emoji => ({
-          ...emoji,
-          x: emoji.x + emoji.speedX * animationSpeedRef.current,
-          y: emoji.y + emoji.speedY * animationSpeedRef.current,
-          speedY: emoji.speedY + 0.02 * animationSpeedRef.current
-        })).filter(emoji => {
-          const age = currentTime - emoji.id;
-          return age < 2000 && emoji.y < 300;
-        })
-      );
+    setCoinEmojis(prevEmojis =>
+      prevEmojis.map(emoji => ({
+        ...emoji,
+        x: emoji.x + emoji.speedX * animationSpeedRef.current,
+        y: emoji.y + emoji.speedY * animationSpeedRef.current,
+        speedY: emoji.speedY + 0.01 * animationSpeedRef.current // Reduced gravity effect
+      })).filter(emoji => {
+        const age = currentTime - emoji.id;
+        return age < 3000 && emoji.y < window.innerHeight; // Remove emojis after 3 seconds or if they're off screen
+      })
+    );
 
-      requestAnimationFrame(animate);
-    });
+    requestAnimationFrame(animate);
+  });
 
-    return () => cancelAnimationFrame(animationFrame);
-  }, [lastTapTime]);
+  return () => cancelAnimationFrame(animationFrame);
+}, [lastTapTime]);
 
   useEffect(() => {
     const interval = setInterval(() => {
