@@ -112,7 +112,7 @@ function App() {
       y: y + (Math.random() - 0.5) * 100,
       size: Math.random() * 20 + 10,
       speedX: (Math.random() - 0.5) * 80, // pixels per second
-      speedY: -(Math.random() * 60 + 80), // pixels per second
+      speedY: -(Math.random() * 110 + 60), // pixels per second
       createdAt: Date.now()
     }));
     setCoinEmojis(prev => [...prev, ...newEmojis]);
@@ -169,7 +169,7 @@ function App() {
           ...emoji,
           x: emoji.x + emoji.speedX * deltaTime,
           y: emoji.y + emoji.speedY * deltaTime,
-          speedY: emoji.speedY + 50 * deltaTime // 50 pixels/second² gravity
+          speedY: emoji.speedY + 100 * deltaTime // 50 pixels/second² gravity
         })).filter(emoji => {
           const age = currentTime - emoji.createdAt;
           return age < 5000 && emoji.y < window.innerHeight && emoji.y > -50;
