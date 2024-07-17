@@ -211,7 +211,7 @@ function App() {
     };
   }, []);
 
- return (
+  return (
     <div className="bg-gradient-main min-h-screen flex flex-col items-center text-white font-medium" style={{ userSelect: 'none' }}>
       <div className="absolute inset-0 h-1/2 bg-gradient-overlay z-0"></div>
       <div className="absolute inset-0 flex items-center justify-center z-0">
@@ -338,14 +338,16 @@ function App() {
               </div>
             </div>
           </div>
-          </div>
           <div className="w-full bg-[#f9c035] rounded-full">
-            <div className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" style={{ width: `${(energy / 6500) * 100}%` }}></div>
+            <div 
+              className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" 
+              style={{ width: `${(energy / 6500) * 100}%` }}
+            ></div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
