@@ -277,8 +277,8 @@ function App() {
           >
             <img 
               src='/images/notcoin.png' 
-              width={256} 
-              height={256} 
+              width={280} 
+              height={280} 
               alt="notcoin"
               draggable="false"
               style={{
