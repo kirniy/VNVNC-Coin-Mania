@@ -210,15 +210,15 @@ function App() {
 
   return (
     <div className="bg-gradient-main min-h-screen flex flex-col items-center text-white font-medium" style={{ userSelect: 'none' }}>
-      <div className="absolute inset-0 h-1/2 bg-gradient-overlay z-0"></div>
+      <div className="absolute inset-0 h-2/3 bg-gradient-overlay z-0" style={{ top: '130px' }}></div>
       <div className="absolute inset-0 flex items-center justify-center z-0">
         <div className="radial-gradient-overlay"></div>
       </div>
 
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
         <div className="fixed top-0 left-0 w-full z-10">
-          <div className="bg-[#000000] text-center py-4 relative overflow-hidden">
-            <p className="text-4xl relative z-10 header-text">VNVNC COIN MANIA</p>
+          <div className="bg-[#000000] text-center py-4 relative overflow-hidden" style={{ height: '150px' }}>
+            <p className="text-4xl relative z-10 header-text absolute top-4 left-0 right-0">VNVNC COIN MANIA</p>
             {headerEmojis.map(emoji => (
               <div
                 key={emoji.id}
@@ -235,7 +235,7 @@ function App() {
           </div>
         </div>
 
-        <div className="mt-24 text-center">
+        <div className="mt-36 text-center">
           <div className="flex justify-center items-center">
             <img src='/images/coin.png' width={60} height={60} alt="Coin" className="mr-4" />
             <span className="text-6xl font-bold">{points.toLocaleString()}</span>
@@ -331,16 +331,15 @@ function App() {
                 <button className="flex flex-col items-center gap-1" onClick={openGithub}>
                   <img src='/images/rocket.png' width={24} height={24} alt="Boosts" />
                   <span>Boosts</span>
-                </button>
-              </div>
+              </button>
             </div>
           </div>
-          <div className="w-full bg-[#f9c035] rounded-full">
-            <div 
-              className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" 
-              style={{ width: `${(energy / 6500) * 100}%` }}
-            ></div>
-          </div>
+        </div>
+        <div className="w-full bg-[#f9c035] rounded-full">
+          <div 
+            className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" 
+            style={{ width: `${(energy / 6500) * 100}%` }}
+          ></div>
         </div>
       </div>
     </div>
