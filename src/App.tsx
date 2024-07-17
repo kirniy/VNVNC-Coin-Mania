@@ -232,18 +232,18 @@ function App() {
         </div>
 
         {/* Updated coin container positioning */}
-        <div className="flex-grow flex items-center justify-center select-none" style={{ marginTop: '-40px' }}>
-          <div 
-            ref={coinRef}
-            className="relative"
-            onClick={handleClick}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            onTouchStart={handleMouseDown}
-            onTouchEnd={handleMouseUp} 
-            onTouchCancel={handleMouseUp}
-          >
+        <div className="absolute inset-0 flex items-center justify-center select-none">
+  <div 
+    ref={coinRef}
+    className="relative"
+    onClick={handleClick}
+    onMouseDown={handleMouseDown}
+    onMouseUp={handleMouseUp}
+    onMouseLeave={handleMouseUp}
+    onTouchStart={handleMouseDown}
+    onTouchEnd={handleMouseUp} 
+    onTouchCancel={handleMouseUp}
+  >
             <img 
               src='/images/notcoin.png' 
               width={256} 
