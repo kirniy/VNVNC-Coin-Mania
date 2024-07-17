@@ -207,7 +207,7 @@ useEffect(() => {
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
         <div className="fixed top-0 left-0 w-full z-10">
           <div className="bg-[#000000] text-center py-4 relative overflow-hidden">
-            <p className="text-3xl relative z-10 header-text">VNVNC COIN MANIA</p>
+            <p className="text-5xl relative z-10 header-text">VNVNC COIN MANIA</p>
             {headerEmojis.map(emoji => (
               <div
                 key={emoji.id}
@@ -279,7 +279,7 @@ useEffect(() => {
             {clicks.map((click) => (
               <div
                 key={click.id}
-                className="absolute text-5xl font-bold opacity-0"
+                className="absolute text-2xl font-bold opacity-0"
                 style={{
                   top: `${click.y - 42}px`,
                   left: `${click.x - 28}px`,
