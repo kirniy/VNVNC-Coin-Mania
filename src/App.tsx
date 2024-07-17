@@ -217,7 +217,7 @@ function App() {
 
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
         <div className="fixed top-0 left-0 w-full z-10">
-          <div className="bg-[#000000] text-center py-4 relative overflow-hidden" style={{ height: '150px' }}>
+          <div className="bg-[#000000] text-center py-4 relative overflow-hidden" style={{ height: '200px' }}>
             <p className="text-4xl relative z-10 header-text absolute top-4 left-0 right-0">VNVNC COIN MANIA</p>
             {headerEmojis.map(emoji => (
               <div
@@ -235,16 +235,19 @@ function App() {
           </div>
         </div>
 
-        <div className="mt-36 text-center">
-          <div className="flex justify-center items-center">
-            <img src='/images/coin.png' width={60} height={60} alt="Coin" className="mr-4" />
-            <span className="text-6xl font-bold">{points.toLocaleString()}</span>
-          </div>
-          <div className="mt-2 flex justify-center items-center">
-            <img src='/images/trophy.png' width={24} height={24} alt="Trophy" className="mr-2" />
-            <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer" className="text-xl">
-              Gold
-            </a>
+        {/* Score and associated components moved up and in front of the header */}
+        <div className="fixed top-20 left-0 w-full z-20 px-4">
+          <div className="text-center">
+            <div className="flex justify-center items-center">
+              <img src='/images/coin.png' width={60} height={60} alt="Coin" className="mr-4" />
+              <span className="text-6xl font-bold">{points.toLocaleString()}</span>
+            </div>
+            <div className="mt-2 flex justify-center items-center">
+              <img src='/images/trophy.png' width={24} height={24} alt="Trophy" className="mr-2" />
+              <a href="https://t.me/vnvnc_spb" target="_blank" rel="noopener noreferrer" className="text-xl">
+                Gold
+              </a>
+            </div>
           </div>
         </div>
 
