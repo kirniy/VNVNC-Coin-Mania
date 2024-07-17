@@ -230,7 +230,7 @@ function App() {
         maxWidth: '90%', // Prevent overflow on smaller screens
         objectFit: 'contain'
       }}
-    />
+    >
                 {emoji.emoji}
               </div>
             ))}
