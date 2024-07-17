@@ -73,8 +73,8 @@ function App() {
       }
       const x = clientX - rect.left - rect.width / 2;
       const y = clientY - rect.top - rect.height / 2;
-      const tiltX = -(y / rect.height) * 30;
-      const tiltY = (x / rect.width) * 30;
+      const tiltX = -(y / rect.height) * 40;
+      const tiltY = (x / rect.width) * 40;
       setTilt({ x: tiltX, y: tiltY });
     }
   };
