@@ -312,7 +312,7 @@ function App() {
             {clicks.map((click) => (
               <div
                 key={click.id}
-                className="absolute text-2xl font-bold opacity-0"
+                className="absolute text-3xl font-bold opacity-0"
                 style={{
                   top: `${click.y - 42}px`,
                   left: `${click.x - 28}px`,
