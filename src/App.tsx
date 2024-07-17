@@ -240,13 +240,13 @@ function App() {
         <div className="fixed top-4 left-0 w-full z-30">
           <div className="text-center py-4 relative">
             <img 
-              src='/images/coinmania.png' 
+              src='/images/coinmania.png'  
               alt="COINMANIA"
               className="mx-auto"
               style={{
                 width: 'auto',
                 height: '72px',
-                maxWidth: '90%',
+                maxWidth: '92%',
                 objectFit: 'contain'
               }}
             />
@@ -254,7 +254,7 @@ function App() {
         </div>
 
         {/* Score and associated components */}
-        <div className="fixed top-28 left-0 w-full z-30 px-4">
+        <div className="fixed top-32 left-0 w-full z-30 px-4">
           <div className="text-center">
             <div className="flex justify-center items-center">
               <img src='/images/coin.png' width={60} height={60} alt="Coin" className="mr-4" />
