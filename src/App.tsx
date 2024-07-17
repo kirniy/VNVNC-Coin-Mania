@@ -237,7 +237,7 @@ function App() {
 
       <div className="w-full z-30 min-h-screen flex flex-col items-center text-white">
         {/* Header */}
-        <div className="fixed top-6 left-0 w-full z-30">
+        <div className="fixed top-4 left-0 w-full z-30">
           <div className="text-center py-4 relative">
             <img 
               src='/images/coinmania.png' 
