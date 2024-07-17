@@ -235,9 +235,9 @@ function App() {
         </div>
       </div>
 
-      <div className="w-full z-20 min-h-screen flex flex-col items-center text-white">
+      <div className="w-full z-30 min-h-screen flex flex-col items-center text-white">
         {/* Header */}
-        <div className="fixed top-10 left-0 w-full z-30">
+        <div className="fixed top-60 left-0 w-full z-30">
           <div className="text-center py-4 relative">
             <img 
               src='/images/coinmania.png' 
@@ -245,8 +245,8 @@ function App() {
               className="mx-auto"
               style={{
                 width: 'auto',
-                height: '48px',
-                maxWidth: '100%',
+                height: '68px',
+                maxWidth: '125%',
                 objectFit: 'contain'
               }}
             />
