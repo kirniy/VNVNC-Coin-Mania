@@ -202,9 +202,11 @@ function App() {
     const preventDefault = (e: Event) => e.preventDefault();
     document.body.style.overflow = 'hidden';
     document.addEventListener('touchmove', preventDefault, { passive: false });
+    document.addEventListener('touchstart', preventDefault, { passive: false });
     return () => {
       document.body.style.overflow = 'auto';
       document.removeEventListener('touchmove', preventDefault);
+      document.removeEventListener('touchstart', preventDefault);
     };
   }, []);
 
@@ -223,11 +225,11 @@ function App() {
     <img 
       src='/images/coinmania.png' 
       alt="COINMANIA"
-      className="absolute top-4 left-0 right-0 mx-auto z-10"
+      className="absolute top-[10%] left-0 right-0 mx-auto z-10"
       style={{
         width: 'auto',
-        height: '48px',
-        maxWidth: '90%',
+        height: '52px',
+        maxWidth: '99%',
         objectFit: 'contain'
       }}
     />
@@ -248,7 +250,7 @@ function App() {
 </div>
 
         {/* Score and associated components */}
-        <div className="fixed top-20 left-0 w-full z-30 px-4">
+        <div className="fixed top-[10%] left-0 w-full z-30 px-4">
           <div className="text-center">
             <div className="flex justify-center items-center">
               <img src='/images/coin.png' width={60} height={60} alt="Coin" className="mr-4" />
