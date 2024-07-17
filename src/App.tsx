@@ -112,7 +112,7 @@ function App() {
       y: y + (Math.random() - 0.5) * 100,
       size: Math.random() * 20 + 10,
       speedX: (Math.random() - 0.5) * 80, // pixels per second
-      speedY: -(Math.random() * 30 + 80), // pixels per second
+      speedY: -(Math.random() * 60 + 80), // pixels per second
       createdAt: Date.now()
     }));
     setCoinEmojis(prev => [...prev, ...newEmojis]);
