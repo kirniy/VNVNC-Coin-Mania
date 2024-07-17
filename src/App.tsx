@@ -254,7 +254,7 @@ function App() {
         </div>
 
         {/* Score and associated components */}
-        <div className="fixed top-20 left-0 w-full z-30 px-4">
+        <div className="fixed top-30 left-0 w-full z-30 px-4">
           <div className="text-center">
             <div className="flex justify-center items-center">
               <img src='/images/coin.png' width={60} height={60} alt="Coin" className="mr-4" />
