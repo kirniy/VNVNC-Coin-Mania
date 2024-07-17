@@ -191,7 +191,7 @@ function App() {
     };
   }, []);
 
-  return (
+ return (
     <div className="bg-gradient-main min-h-screen flex flex-col items-center text-white font-medium" style={{ userSelect: 'none' }}>
       <div className="absolute inset-0 h-1/2 bg-gradient-overlay z-0"></div>
       <div className="absolute inset-0 flex items-center justify-center z-0">
@@ -231,7 +231,8 @@ function App() {
           </div>
         </div>
 
-        <div className="flex-grow flex items-center justify-center select-none">
+        {/* Updated coin container positioning */}
+        <div className="flex-grow flex items-center justify-center select-none" style={{ marginTop: '-80px' }}>
           <div 
             ref={coinRef}
             className="relative"
