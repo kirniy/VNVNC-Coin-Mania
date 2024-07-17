@@ -70,8 +70,9 @@ function App() {
       }
       const x = clientX - rect.left - rect.width / 2;
       const y = clientY - rect.top - rect.height / 2;
-      const tiltX = (y / rect.height) * 30;
-      const tiltY = -(x / rect.width) * 30;
+      // Reversed tilt direction
+      const tiltX = -(y / rect.height) * 30;
+      const tiltY = (x / rect.width) * 30;
       setTilt({ x: tiltX, y: tiltY });
     }
   };
@@ -92,8 +93,9 @@ function App() {
       x: Math.random() * 100,
       y: Math.random() * 100,
       size: Math.random() * 24 + 16,
-      speedX: (Math.random() - 0.5) * 0.5,
-      speedY: (Math.random() - 0.5) * 0.5
+      // Decreased speed by 60%
+      speedX: (Math.random() - 0.5) * 0.2,
+      speedY: (Math.random() - 0.5) * 0.2
     }));
   }, []);
 
@@ -205,7 +207,7 @@ function App() {
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
         <div className="fixed top-0 left-0 w-full z-10">
           <div className="bg-[#1f1f1f] text-center py-4 relative overflow-hidden">
-            <p className="text-2xl relative z-10">VNVNC COIN MANIA</p>
+            <p className="text-2xl relative z-10 font-extrabold" style={{ WebkitTextStroke: '1px red' }}>VNVNC COIN MANIA</p>
             {headerEmojis.map(emoji => (
               <div
                 key={emoji.id}
@@ -286,7 +288,7 @@ function App() {
                 }}
                 onAnimationEnd={() => handleAnimationEnd(click.id)}
               >
-                +1
+                +1⭐️
               </div>
             ))}
           </div>
