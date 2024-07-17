@@ -216,10 +216,10 @@ function App() {
         <div className="radial-gradient-overlay"></div>
       </div>
 
-      <div className="w-full z-10 h-full flex flex-col items-center text-white">
+      <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
         {/* Header with transparent background */}
-<div className="fixed top-0 left-0 w-full z-10">
-  <div className="text-center py-4 relative overflow-hidden" style={{ height: '800px' }}>
+<div className="fixed top-0 left-0 w-full z-20">
+  <div className="text-center py-4 relative overflow-hidden" style={{ height: '200px' }}>
     <img 
       src='/images/coinmania.png' 
       alt="COINMANIA"
@@ -277,8 +277,8 @@ function App() {
           >
             <img 
               src='/images/notcoin.png' 
-              width={280} 
-              height={280} 
+              width={300} 
+              height={300} 
               alt="notcoin"
               draggable="false"
               style={{
