@@ -84,7 +84,7 @@ function App() {
   };
 
   const getRandomEmoji = () => {
-    const emojis = ['🎉', '⭐', '💥', '🚀', '💎', '🔥'];
+    const emojis = ['🎉', '⭐', '💥', '🚀', '����', '🔥'];
     return emojis[Math.floor(Math.random() * emojis.length)];
   };
 
@@ -226,16 +226,26 @@ function App() {
       className="absolute top-4 left-0 right-0 mx-auto z-10"
       style={{
         width: 'auto',
-        height: '48px', // Adjust this to match the current text size
-        maxWidth: '90%', // Prevent overflow on smaller screens
+        height: '48px',
+        maxWidth: '90%',
         objectFit: 'contain'
       }}
-    >
-                {emoji.emoji}
-              </div>
-            ))}
-          </div>
-        </div>
+    />
+    {headerEmojis.map(emoji => (
+      <div
+        key={emoji.id}
+        className="absolute text-2xl pointer-events-none"
+        style={{
+          left: `${emoji.x}%`,
+          top: `${emoji.y}%`,
+          fontSize: `${emoji.size}px`,
+        }}
+      >
+        {emoji.emoji}
+      </div>
+    ))}
+  </div>
+</div>
 
         {/* Score and associated components */}
         <div className="fixed top-20 left-0 w-full z-30 px-4">
