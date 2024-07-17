@@ -8,6 +8,7 @@ type EmojiType = {
   size: number;
   speedX: number;
   speedY: number;
+  createdAt: number;
 };
 
 type ClickType = {
@@ -40,7 +41,7 @@ function App() {
   const [clicks, setClicks] = useState<ClickType[]>([]);
   const [lastTapTime, setLastTapTime] = useState(Date.now());
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const animationSpeedRef = useRef(0.4);
+  const headerAnimationSpeedRef = useRef(0.4);
   const coinRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -70,7 +71,6 @@ function App() {
       }
       const x = clientX - rect.left - rect.width / 2;
       const y = clientY - rect.top - rect.height / 2;
-      // Reversed tilt direction
       const tiltX = -(y / rect.height) * 30;
       const tiltY = (x / rect.width) * 30;
       setTilt({ x: tiltX, y: tiltY });
@@ -93,9 +93,9 @@ function App() {
       x: Math.random() * 100,
       y: Math.random() * 100,
       size: Math.random() * 24 + 16,
-      // Decreased speed by 60%
       speedX: (Math.random() - 0.5) * 0.2,
-      speedY: (Math.random() - 0.5) * 0.2
+      speedY: (Math.random() - 0.5) * 0.2,
+      createdAt: Date.now()
     }));
   }, []);
 
@@ -104,18 +104,19 @@ function App() {
   }, [createInitialHeaderEmojis]);
 
   const addCoinEmojis = useCallback((x: number, y: number) => {
-  const newEmojis = Array(15).fill(null).map(() => ({
-    id: Date.now() + Math.random(),
-    emoji: getRandomEmoji(),
-    x: x + (Math.random() - 0.5) * 100,
-    y: y + (Math.random() - 0.5) * 100,
-    size: Math.random() * 20 + 10,
-    speedX: (Math.random() - 0.5) * 0.1, // Reduced from 1 to 0.4
-    speedY: -(Math.random() * 0.1 + 0.1) // Reduced from 0.5 to 0.2
-  }));
-  setCoinEmojis(prev => [...prev, ...newEmojis]);
-  setLastTapTime(Date.now());
-}, []);
+    const newEmojis = Array(15).fill(null).map(() => ({
+      id: Date.now() + Math.random(),
+      emoji: getRandomEmoji(),
+      x: x + (Math.random() - 0.5) * 100,
+      y: y + (Math.random() - 0.5) * 100,
+      size: Math.random() * 20 + 10,
+      speedX: (Math.random() - 0.5) * 0.05,
+      speedY: -(Math.random() * 0.05 + 0.05),
+      createdAt: Date.now()
+    }));
+    setCoinEmojis(prev => [...prev, ...newEmojis]);
+    setLastTapTime(Date.now());
+  }, []);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     if (energy > 0 && coinRef.current) {
@@ -135,7 +136,6 @@ function App() {
       addCoinEmojis(x, y);
       setClicks(prev => [...prev, { id: Date.now(), x, y }]);
       
-      // Updated Haptic feedback
       if (window.Telegram?.WebApp?.HapticFeedback) {
         window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
       }
@@ -146,38 +146,38 @@ function App() {
     setClicks(prevClicks => prevClicks.filter(click => click.id !== id));
   };
 
-useEffect(() => {
-  const animationFrame = requestAnimationFrame(function animate() {
-    const currentTime = Date.now();
-    const timeSinceLastTap = currentTime - lastTapTime;
-    
-    animationSpeedRef.current = timeSinceLastTap > 2000 ? 0.2 : 1;
+  useEffect(() => {
+    const animationFrame = requestAnimationFrame(function animate() {
+      const currentTime = Date.now();
+      const timeSinceLastTap = currentTime - lastTapTime;
+      
+      headerAnimationSpeedRef.current = timeSinceLastTap > 2000 ? 0.2 : 1;
 
-    setHeaderEmojis(prevEmojis =>
-      prevEmojis.map(emoji => ({
-        ...emoji,
-        x: (emoji.x + emoji.speedX * animationSpeedRef.current + 100) % 100,
-        y: (emoji.y + emoji.speedY * animationSpeedRef.current + 100) % 100,
-      }))
-    );
+      setHeaderEmojis(prevEmojis =>
+        prevEmojis.map(emoji => ({
+          ...emoji,
+          x: (emoji.x + emoji.speedX * headerAnimationSpeedRef.current + 100) % 100,
+          y: (emoji.y + emoji.speedY * headerAnimationSpeedRef.current + 100) % 100,
+        }))
+      );
 
-    setCoinEmojis(prevEmojis =>
-      prevEmojis.map(emoji => ({
-        ...emoji,
-        x: emoji.x + emoji.speedX * animationSpeedRef.current,
-        y: emoji.y + emoji.speedY * animationSpeedRef.current,
-        speedY: emoji.speedY + 0.01 * animationSpeedRef.current // Reduced gravity effect
-      })).filter(emoji => {
-        const age = currentTime - emoji.id;
-        return age < 3000 && emoji.y < window.innerHeight; // Remove emojis after 3 seconds or if they're off screen
-      })
-    );
+      setCoinEmojis(prevEmojis =>
+        prevEmojis.map(emoji => ({
+          ...emoji,
+          x: emoji.x + emoji.speedX,
+          y: emoji.y + emoji.speedY,
+          speedY: emoji.speedY + 0.0005 // Very small constant gravity effect
+        })).filter(emoji => {
+          const age = currentTime - emoji.createdAt;
+          return age < 5000 && emoji.y < window.innerHeight && emoji.y > -50; // Remove emojis after 5 seconds or if they're off screen
+        })
+      );
 
-    requestAnimationFrame(animate);
-  });
+      requestAnimationFrame(animate);
+    });
 
-  return () => cancelAnimationFrame(animationFrame);
-}, [lastTapTime]);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [lastTapTime]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -186,7 +186,6 @@ useEffect(() => {
     return () => clearInterval(interval);
   }, []);
 
-  // Disable scrolling on phones
   useEffect(() => {
     const preventDefault = (e: Event) => e.preventDefault();
     document.body.style.overflow = 'hidden';
