@@ -42,6 +42,7 @@ function App() {
   const [lastTapTime, setLastTapTime] = useState(Date.now());
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const headerAnimationSpeedRef = useRef(0.4);
+  const lastUpdateTimeRef = useRef(Date.now());
   const coinRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -110,8 +111,8 @@ function App() {
       x: x + (Math.random() - 0.5) * 100,
       y: y + (Math.random() - 0.5) * 100,
       size: Math.random() * 20 + 10,
-      speedX: (Math.random() - 0.5) * 0.2,
-      speedY: -(Math.random() * 0.05 + 0.2),
+      speedX: (Math.random() - 0.5) * 30, // pixels per second
+      speedY: -(Math.random() * 30 + 30), // pixels per second
       createdAt: Date.now()
     }));
     setCoinEmojis(prev => [...prev, ...newEmojis]);
@@ -149,8 +150,10 @@ function App() {
   useEffect(() => {
     const animationFrame = requestAnimationFrame(function animate() {
       const currentTime = Date.now();
+      const deltaTime = (currentTime - lastUpdateTimeRef.current) / 1000; // time in seconds
+      lastUpdateTimeRef.current = currentTime;
+
       const timeSinceLastTap = currentTime - lastTapTime;
-      
       headerAnimationSpeedRef.current = timeSinceLastTap > 2000 ? 0.2 : 1;
 
       setHeaderEmojis(prevEmojis =>
@@ -164,12 +167,12 @@ function App() {
       setCoinEmojis(prevEmojis =>
         prevEmojis.map(emoji => ({
           ...emoji,
-          x: emoji.x + emoji.speedX,
-          y: emoji.y + emoji.speedY,
-          speedY: emoji.speedY + 0.0005 // Very small constant gravity effect
+          x: emoji.x + emoji.speedX * deltaTime,
+          y: emoji.y + emoji.speedY * deltaTime,
+          speedY: emoji.speedY + 50 * deltaTime // 50 pixels/second² gravity
         })).filter(emoji => {
           const age = currentTime - emoji.createdAt;
-          return age < 5000 && emoji.y < window.innerHeight && emoji.y > -50; // Remove emojis after 5 seconds or if they're off screen
+          return age < 5000 && emoji.y < window.innerHeight && emoji.y > -50;
         })
       );
 
