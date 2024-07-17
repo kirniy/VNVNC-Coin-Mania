@@ -112,7 +112,7 @@ function App() {
     }
     consecutiveTapsRef.current++;
 
-    if (consecutiveTapsRef.current % 4 === 0 || Math.random() < 0.2) {
+    if (consecutiveTapsRef.current >= 8 && consecutiveTapsRef.current % 8 === 0) {
       const newEmojis = Array(12).fill(null).map(() => ({
         id: Date.now() + Math.random(),
         emoji: getRandomEmoji(),
@@ -210,8 +210,8 @@ function App() {
 
   return (
     <div className="bg-gradient-main min-h-screen flex flex-col items-center text-white font-medium" style={{ userSelect: 'none' }}>
-      {/* Extend the main gradient to cover the entire screen */}
-      <div className="absolute inset-0 bg-gradient-overlay z-0"></div>
+      {/* Adjusted gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-transparent z-0" style={{ height: '100vh' }}></div>
       <div className="absolute inset-0 flex items-center justify-center z-0">
         <div className="radial-gradient-overlay"></div>
       </div>
@@ -310,43 +310,43 @@ function App() {
           </div>
         </div>
 
-        <div className="fixed bottom-0 left-0 w-full px-6 pb-8 z-40">
-          <div className="w-full flex justify-between gap-2 mb-4">
-            <div className="w-1/3 flex items-center justify-start max-w-32">
-              <div className="flex items-center justify-center">
-                <img src='/images/high-voltage.png' width={44} height={44} alt="High Voltage" />
-                <div className="ml-2 text-left">
-                  <span className="text-white text-2xl font-bold block">{energy}</span>
-                  <span className="text-white text-sm opacity-75">/ 6500</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex-grow flex items-center max-w-60 text-sm">
-              <div className="w-full bg-[#fad258] py-4 rounded-2xl flex justify-around">
-                <button className="flex flex-col items-center gap-1" onClick={openGithub}>
-                  <img src='/images/bear.png' width={24} height={24} alt="Frens"/>
-                  <span>Frens</span>
-                </button>
-                <div className="h-[48px] w-[2px] bg-[#fddb6d]"></div>
-                <button className="flex flex-col items-center gap-1" onClick={openGithub}>
-                  <img src='/images/coin.png' width={24} height={24} alt="Earn" />
-                  <span>Earn</span>
-                </button>
-                <div className="h-[48px] w-[2px] bg-[#fddb6d]"></div>
-                <button className="flex flex-col items-center gap-1" onClick={openGithub}>
-                  <img src='/images/rocket.png' width={24} height={24} alt="Boosts" />
-                  <span>Boosts</span>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="w-full bg-[#f9c035] rounded-full">
-            <div 
-              className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" 
-              style={{ width: `${(energy / 6500) * 100}%` }}
-            ></div>
-          </div>
+<div className="fixed bottom-0 left-0 w-full px-6 pb-8 z-40">
+  <div className="w-full flex justify-between gap-2 mb-4">
+    <div className="w-1/3 flex items-center justify-start max-w-32">
+      <div className="flex items-center justify-center">
+        <img src='/images/high-voltage.png' width={44} height={44} alt="High Voltage" />
+        <div className="ml-2 text-left">
+          <span className="text-white text-2xl font-bold block">{energy}</span>
+          <span className="text-white text-sm opacity-75">/ 6500</span>
         </div>
+      </div>
+    </div>
+    <div className="flex-grow flex items-center max-w-60 text-sm">
+      <div className="w-full bg-[#fad258] py-4 rounded-2xl flex justify-around">
+        <button className="flex flex-col items-center gap-1" onClick={openGithub}>
+          <img src='/images/bear.png' width={24} height={24} alt="Frens"/>
+          <span>Frens</span>
+        </button>
+        <div className="h-[48px] w-[2px] bg-[#fddb6d]"></div>
+        <button className="flex flex-col items-center gap-1" onClick={openGithub}>
+          <img src='/images/coin.png' width={24} height={24} alt="Earn" />
+          <span>Earn</span>
+        </button>
+        <div className="h-[48px] w-[2px] bg-[#fddb6d]"></div>
+        <button className="flex flex-col items-center gap-1" onClick={openGithub}>
+          <img src='/images/rocket.png' width={24} height={24} alt="Boosts" />
+          <span>Boosts</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div className="w-full bg-[#f9c035] rounded-full">
+    <div 
+      className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" 
+      style={{ width: `${(energy / 6500) * 100}%` }}
+    ></div>
+  </div>
+</div>
       </div>
     </div>
   );
