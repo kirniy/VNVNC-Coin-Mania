@@ -110,8 +110,8 @@ function App() {
     x: x + (Math.random() - 0.5) * 100,
     y: y + (Math.random() - 0.5) * 100,
     size: Math.random() * 20 + 10,
-    speedX: (Math.random() - 0.5) * 0.4, // Reduced from 1 to 0.4
-    speedY: -(Math.random() * 0.2 + 0.1) // Reduced from 0.5 to 0.2
+    speedX: (Math.random() - 0.5) * 0.1, // Reduced from 1 to 0.4
+    speedY: -(Math.random() * 0.1 + 0.1) // Reduced from 0.5 to 0.2
   }));
   setCoinEmojis(prev => [...prev, ...newEmojis]);
   setLastTapTime(Date.now());
