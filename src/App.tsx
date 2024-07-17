@@ -237,7 +237,7 @@ function App() {
 
       <div className="w-full z-30 min-h-screen flex flex-col items-center text-white">
         {/* Header */}
-        <div className="fixed top-0 left-0 w-full z-30">
+        <div className="fixed top-6 left-0 w-full z-30">
           <div className="text-center py-4 relative">
             <img 
               src='/images/coinmania.png' 
@@ -245,8 +245,8 @@ function App() {
               className="mx-auto"
               style={{
                 width: 'auto',
-                height: '64px',
-                maxWidth: '100%',
+                height: '72px',
+                maxWidth: '90%',
                 objectFit: 'contain'
               }}
             />
@@ -254,7 +254,7 @@ function App() {
         </div>
 
         {/* Score and associated components */}
-        <div className="fixed top-25 left-0 w-full z-30 px-4">
+        <div className="fixed top-28 left-0 w-full z-30 px-4">
           <div className="text-center">
             <div className="flex justify-center items-center">
               <img src='/images/coin.png' width={60} height={60} alt="Coin" className="mr-4" />
