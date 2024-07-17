@@ -219,7 +219,7 @@ function App() {
       <div className="w-full z-10 h-full flex flex-col items-center text-white">
         {/* Header with transparent background */}
 <div className="fixed top-0 left-0 w-full z-20">
-  <div className="text-center py-4 relative overflow-hidden" style={{ height: '200px' }}>
+  <div className="text-center py-4 relative overflow-hidden" style={{ height: '800px' }}>
     <img 
       src='/images/coinmania.png' 
       alt="COINMANIA"
