@@ -44,6 +44,7 @@ function App() {
   const headerAnimationSpeedRef = useRef(0.4);
   const lastUpdateTimeRef = useRef(Date.now());
   const coinRef = useRef<HTMLDivElement>(null);
+  const consecutiveTapsRef = useRef(0);
 
   useEffect(() => {
     window.Telegram?.WebApp?.expand();
@@ -105,19 +106,27 @@ function App() {
   }, [createInitialHeaderEmojis]);
 
   const addCoinEmojis = useCallback((x: number, y: number) => {
-    const newEmojis = Array(15).fill(null).map(() => ({
-      id: Date.now() + Math.random(),
-      emoji: getRandomEmoji(),
-      x: x + (Math.random() - 0.5) * 100,
-      y: y + (Math.random() - 0.5) * 100,
-      size: Math.random() * 20 + 10,
-      speedX: (Math.random() - 0.5) * 80, // pixels per second
-      speedY: -(Math.random() * 160 + 60), // pixels per second
-      createdAt: Date.now()
-    }));
-    setCoinEmojis(prev => [...prev, ...newEmojis]);
-    setLastTapTime(Date.now());
-  }, []);
+    const currentTime = Date.now();
+    if (currentTime - lastTapTime > 1000) {
+      consecutiveTapsRef.current = 0;
+    }
+    consecutiveTapsRef.current++;
+
+    if (consecutiveTapsRef.current % 4 === 0 || Math.random() < 0.2) {
+      const newEmojis = Array(12).fill(null).map(() => ({
+        id: Date.now() + Math.random(),
+        emoji: getRandomEmoji(),
+        x: x + (Math.random() - 0.5) * 60,
+        y: y + (Math.random() - 0.5) * 60,
+        size: Math.random() * 24 + 14,
+        speedX: (Math.random() - 0.5) * 100,
+        speedY: -(Math.random() * 200 + 100),
+        createdAt: Date.now()
+      }));
+      setCoinEmojis(prev => [...prev, ...newEmojis]);
+    }
+    setLastTapTime(currentTime);
+  }, [lastTapTime]);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     if (energy > 0 && coinRef.current) {
@@ -165,14 +174,17 @@ function App() {
       );
 
       setCoinEmojis(prevEmojis =>
-        prevEmojis.map(emoji => ({
-          ...emoji,
-          x: emoji.x + emoji.speedX * deltaTime,
-          y: emoji.y + emoji.speedY * deltaTime,
-          speedY: emoji.speedY + 220 * deltaTime // 50 pixels/second² gravity
-        })).filter(emoji => {
-          const age = currentTime - emoji.createdAt;
-          return age < 5000 && emoji.y < window.innerHeight && emoji.y > -50;
+        prevEmojis.map(emoji => {
+          const age = (currentTime - emoji.createdAt) / 1000;
+          return {
+            ...emoji,
+            x: emoji.x + emoji.speedX * deltaTime,
+            y: emoji.y + emoji.speedY * deltaTime + (0.5 * 500 * deltaTime * deltaTime),
+            speedY: emoji.speedY + 500 * deltaTime
+          };
+        }).filter(emoji => {
+          const age = (currentTime - emoji.createdAt) / 1000;
+          return age < 2 && emoji.y < window.innerHeight && emoji.y > -50;
         })
       );
 
@@ -325,6 +337,7 @@ function App() {
                 </button>
               </div>
             </div>
+          </div>
           </div>
           <div className="w-full bg-[#f9c035] rounded-full">
             <div className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" style={{ width: `${(energy / 6500) * 100}%` }}></div>
