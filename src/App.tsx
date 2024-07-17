@@ -232,7 +232,7 @@ function App() {
         </div>
 
         {/* Updated coin container positioning */}
-        <div className="flex-grow flex items-center justify-center select-none" style={{ marginTop: '-80px' }}>
+        <div className="flex-grow flex items-center justify-center select-none" style={{ marginTop: '-40px' }}>
           <div 
             ref={coinRef}
             className="relative"
