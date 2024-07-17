@@ -35,7 +35,8 @@ body {
 }
 
 .header-text {
-  font-weight: 900;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 800;
   -webkit-text-stroke: 1px red;
   text-stroke: 1px red;
   color: white;
