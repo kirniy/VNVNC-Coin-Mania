@@ -237,7 +237,7 @@ function App() {
 
       <div className="w-full z-30 min-h-screen flex flex-col items-center text-white">
         {/* Header */}
-        <div className="fixed top-60 left-0 w-full z-30">
+        <div className="fixed top-12 left-0 w-full z-30">
           <div className="text-center py-4 relative">
             <img 
               src='/images/coinmania.png' 
@@ -246,7 +246,7 @@ function App() {
               style={{
                 width: 'auto',
                 height: '68px',
-                maxWidth: '125%',
+                maxWidth: '120%',
                 objectFit: 'contain'
               }}
             />
@@ -254,11 +254,11 @@ function App() {
         </div>
 
         {/* Score and associated components */}
-        <div className="fixed top-30 left-0 w-full z-30 px-4">
+        <div className="fixed top-50 left-0 w-full z-30 px-4">
           <div className="text-center">
             <div className="flex justify-center items-center">
               <img src='/images/coin.png' width={60} height={60} alt="Coin" className="mr-4" />
-              <span className="text-5xl font-bold">{points.toLocaleString()}</span>
+              <span className="text-4xl font-bold">{points.toLocaleString()}</span>
             </div>
             <div className="mt-2 flex justify-center items-center">
               <img src='/images/trophy.png' width={24} height={24} alt="Trophy" className="mr-2" />
