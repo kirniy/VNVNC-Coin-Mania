@@ -210,20 +210,39 @@ function App() {
 
   return (
     <div className="bg-gradient-main min-h-screen flex flex-col items-center text-white font-medium" style={{ userSelect: 'none' }}>
-      {/* Adjusted gradient overlay */}
+      {/* Gradient background */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-transparent z-0" style={{ height: '100vh' }}></div>
       <div className="absolute inset-0 flex items-center justify-center z-0">
         <div className="radial-gradient-overlay"></div>
       </div>
 
-      <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
-        {/* Full screen header with transparent background */}
-        <div className="fixed inset-0 z-20 overflow-hidden pointer-events-none">
-          <div className="relative w-full h-full">
+      {/* Emoji animation layer */}
+      <div className="fixed inset-0 z-10 overflow-hidden pointer-events-none">
+        <div className="relative w-full h-full">
+          {headerEmojis.map(emoji => (
+            <div
+              key={emoji.id}
+              className="absolute text-2xl"
+              style={{
+                left: `${emoji.x}%`,
+                top: `${emoji.y}%`,
+                fontSize: `${emoji.size}px`,
+              }}
+            >
+              {emoji.emoji}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="w-full z-20 min-h-screen flex flex-col items-center text-white">
+        {/* Header */}
+        <div className="fixed top-0 left-0 w-full z-30">
+          <div className="text-center py-4 relative">
             <img 
               src='/images/coinmania.png' 
               alt="COINMANIA"
-              className="absolute top-4 left-0 right-0 mx-auto z-10 pointer-events-auto"
+              className="mx-auto"
               style={{
                 width: 'auto',
                 height: '48px',
@@ -231,19 +250,6 @@ function App() {
                 objectFit: 'contain'
               }}
             />
-            {headerEmojis.map(emoji => (
-              <div
-                key={emoji.id}
-                className="absolute text-2xl"
-                style={{
-                  left: `${emoji.x}%`,
-                  top: `${emoji.y}%`,
-                  fontSize: `${emoji.size}px`,
-                }}
-              >
-                {emoji.emoji}
-              </div>
-            ))}
           </div>
         </div>
 
@@ -263,7 +269,8 @@ function App() {
           </div>
         </div>
 
-        <div className="absolute inset-0 flex items-center justify-center select-none">
+        {/* Main coin */}
+        <div className="absolute inset-0 flex items-center justify-center select-none z-30">
           <div 
             ref={coinRef}
             className="relative"
@@ -320,7 +327,8 @@ function App() {
           </div>
         </div>
 
-<div className="fixed bottom-0 left-0 w-full px-6 pb-8 z-40">
+        {/* Bottom bar */}
+        <div className="fixed bottom-0 left-0 w-full px-6 pb-8 z-40">
           <div className="w-full flex justify-between gap-2 mb-4">
             <div className="w-1/3 flex items-center justify-start max-w-32">
               <div className="flex items-center justify-center">
