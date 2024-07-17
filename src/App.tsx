@@ -331,15 +331,16 @@ function App() {
                 <button className="flex flex-col items-center gap-1" onClick={openGithub}>
                   <img src='/images/rocket.png' width={24} height={24} alt="Boosts" />
                   <span>Boosts</span>
-              </button>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="w-full bg-[#f9c035] rounded-full">
-          <div 
-            className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" 
-            style={{ width: `${(energy / 6500) * 100}%` }}
-          ></div>
+          <div className="w-full bg-[#f9c035] rounded-full">
+            <div 
+              className="bg-gradient-to-r from-[#f3c45a] to-[#fffad0] h-4 rounded-full" 
+              style={{ width: `${(energy / 6500) * 100}%` }}
+            ></div>
+          </div>
         </div>
       </div>
     </div>
