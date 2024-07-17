@@ -218,19 +218,19 @@ function App() {
 
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
         {/* Header with transparent background */}
-        <div className="fixed top-0 left-0 w-full z-20">
-          <div className="text-center py-4 relative overflow-hidden" style={{ height: '200px' }}>
-            <p className="text-4xl relative z-10 header-text absolute top-4 left-0 right-0">VNVNC COIN MANIA</p>
-            {headerEmojis.map(emoji => (
-              <div
-                key={emoji.id}
-                className="absolute text-2xl pointer-events-none"
-                style={{
-                  left: `${emoji.x}%`,
-                  top: `${emoji.y}%`,
-                  fontSize: `${emoji.size}px`,
-                }}
-              >
+<div className="fixed top-0 left-0 w-full z-20">
+  <div className="text-center py-4 relative overflow-hidden" style={{ height: '200px' }}>
+    <img 
+      src='/images/coinmania.png' 
+      alt="COINMANIA"
+      className="absolute top-4 left-0 right-0 mx-auto z-10"
+      style={{
+        width: 'auto',
+        height: '48px', // Adjust this to match the current text size
+        maxWidth: '90%', // Prevent overflow on smaller screens
+        objectFit: 'contain'
+      }}
+    />
                 {emoji.emoji}
               </div>
             ))}
