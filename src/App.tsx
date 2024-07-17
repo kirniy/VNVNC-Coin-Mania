@@ -22,7 +22,9 @@ declare global {
       WebApp?: {
         expand: () => void;
         HapticFeedback: {
-          impactOccurred: (style: 'light' | 'medium' | 'heavy') => void;
+          impactOccurred: (style: 'light' | 'medium' | 'heavy' | 'rigid' | 'soft') => void;
+          notificationOccurred: (type: 'error' | 'success' | 'warning') => void;
+          selectionChanged: () => void;
         };
       };
     };
@@ -131,8 +133,10 @@ function App() {
       addCoinEmojis(x, y);
       setClicks(prev => [...prev, { id: Date.now(), x, y }]);
       
-      // Haptic feedback
-      window.Telegram?.WebApp?.HapticFeedback.impactOccurred('light');
+      // Updated Haptic feedback
+      if (window.Telegram?.WebApp?.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+      }
     }
   };
 
@@ -231,19 +235,18 @@ function App() {
           </div>
         </div>
 
-        {/* Updated coin container positioning */}
         <div className="absolute inset-0 flex items-center justify-center select-none">
-  <div 
-    ref={coinRef}
-    className="relative"
-    onClick={handleClick}
-    onMouseDown={handleMouseDown}
-    onMouseUp={handleMouseUp}
-    onMouseLeave={handleMouseUp}
-    onTouchStart={handleMouseDown}
-    onTouchEnd={handleMouseUp} 
-    onTouchCancel={handleMouseUp}
-  >
+          <div 
+            ref={coinRef}
+            className="relative"
+            onClick={handleClick}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={handleMouseDown}
+            onTouchEnd={handleMouseUp} 
+            onTouchCancel={handleMouseUp}
+          >
             <img 
               src='/images/notcoin.png' 
               width={256} 
