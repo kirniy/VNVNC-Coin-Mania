@@ -210,14 +210,16 @@ function App() {
 
   return (
     <div className="bg-gradient-main min-h-screen flex flex-col items-center text-white font-medium" style={{ userSelect: 'none' }}>
-      <div className="absolute inset-0 h-2/3 bg-gradient-overlay z-0" style={{ top: '130px' }}></div>
+      {/* Extend the main gradient to cover the entire screen */}
+      <div className="absolute inset-0 bg-gradient-overlay z-0"></div>
       <div className="absolute inset-0 flex items-center justify-center z-0">
         <div className="radial-gradient-overlay"></div>
       </div>
 
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
-        <div className="fixed top-0 left-0 w-full z-10">
-          <div className="bg-[#000000] text-center py-4 relative overflow-hidden" style={{ height: '200px' }}>
+        {/* Header with transparent background */}
+        <div className="fixed top-0 left-0 w-full z-20">
+          <div className="text-center py-4 relative overflow-hidden" style={{ height: '200px' }}>
             <p className="text-4xl relative z-10 header-text absolute top-4 left-0 right-0">VNVNC COIN MANIA</p>
             {headerEmojis.map(emoji => (
               <div
@@ -235,8 +237,8 @@ function App() {
           </div>
         </div>
 
-        {/* Score and associated components moved up and in front of the header */}
-        <div className="fixed top-20 left-0 w-full z-20 px-4">
+        {/* Score and associated components */}
+        <div className="fixed top-20 left-0 w-full z-30 px-4">
           <div className="text-center">
             <div className="flex justify-center items-center">
               <img src='/images/coin.png' width={60} height={60} alt="Coin" className="mr-4" />
@@ -308,7 +310,7 @@ function App() {
           </div>
         </div>
 
-        <div className="fixed bottom-0 left-0 w-full px-6 pb-8 z-10">
+        <div className="fixed bottom-0 left-0 w-full px-6 pb-8 z-40">
           <div className="w-full flex justify-between gap-2 mb-4">
             <div className="w-1/3 flex items-center justify-start max-w-32">
               <div className="flex items-center justify-center">
